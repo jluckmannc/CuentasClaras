@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CuentasClaras</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+    {% if debug %}
+        <script src="http://127.0.0.1:8000/__reload__/reload.js"></script>
+    {% endif %}
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-blue-500 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- Logo y título -->
+            <div class="flex items-center gap-4">
+                <img src="{% static 'img/logo.png' %}" alt="Logo CuentasClaras"
+                     class="h-16 w-16 md:h-20 md:w-20">
+                <h1 class="text-2xl md:text-3xl font-bold">CuentasClaras</h1>
+            </div>
+
+            <!-- Botón para abrir/cerrar el menú en móvil -->
+            <button 
+                id="menu-toggle" 
+                class="block md:hidden bg-blue-700 px-4 py-2 rounded focus:outline-none">
+                <span id="menu-text">Menú</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Menú deslizante -->
+    <nav id="menu" class="fixed top-0 left-0 h-full w-64 bg-blue-600 text-white transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
+        <ul class="flex flex-col gap-4 p-6">
+            <li><a href="#" class="hover:underline">Inicio</a></li>
+            <li><a href="#" class="hover:underline">Gastos</a></li>
+            <li><a href="#" class="hover:underline">Grupos</a></li>
+            <li><a href="#" class="hover:underline">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main content block -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- Script para manejar el menú -->
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const menu = document.getElementById('menu');
+        const menuText = document.getElementById('menu-text');
+
+        menuToggle.addEventListener('click', () => {
+            // Alterna la visibilidad del menú deslizante
+            menu.classList.toggle('-translate-x-full');
+            menu.classList.toggle('translate-x-0');
+
+            // Cambia el texto del botón "Menú" dependiendo del estado
+            if (menu.classList.contains('translate-x-0')) {
+                menuText.style.display = 'none'; // Oculta "Menú" cuando el menú está abierto
+            } else {
+                menuText.style.display = 'inline'; // Muestra "Menú" cuando el menú está cerrado
+            }
+        });
+    </script>
+</body>
+</html>

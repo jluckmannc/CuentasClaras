@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Gastos - CuentasClaras{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-blue-100 py-10">
+    <div class="container mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-4">Divide tus gastos fácilmente</h2>
+        <p class="text-lg mb-6">Con CuentasClaras, gestionar tus finanzas con amigos es más sencillo que nunca.</p>
+        <a href="{% url 'input_data' %}" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+          Empezar
+        </a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-10">
+    <div class="container mx-auto text-center">
+        <h2 class="text-2xl font-bold mb-6">Características</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white shadow p-6 rounded">
+                <h3 class="text-xl font-bold mb-2">Optimización de pagos</h3>
+                <p>Minimiza las transferencias necesarias para saldar cuentas.</p>
+            </div>
+            <div class="bg-white shadow p-6 rounded">
+                <h3 class="text-xl font-bold mb-2">Grupos personalizados</h3>
+                <p>Crea grupos y ajusta gastos según las necesidades.</p>
+            </div>
+            <div class="bg-white shadow p-6 rounded">
+                <h3 class="text-xl font-bold mb-2">Fácil de usar</h3>
+                <p>Interfaz intuitiva para que te concentres en lo que importa.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-4">
+    <div class="container mx-auto text-center">
+        <p>&copy; 2025 CuentasClaras. Todos los derechos reservados.</p>
+    </div>
+</footer>
+{% endblock %}

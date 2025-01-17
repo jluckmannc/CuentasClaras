@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+  <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Organiza tus gastos</h2>
+
+  <!-- Paso 1: Agregar amigos -->
+  <div id="step-1" class="mb-8">
+      <h3 class="text-2xl font-bold mb-4 text-gray-700">Paso 1: Agrega a tus amigos</h3>
+      <div id="friends-list" class="mb-6">
+          <div class="friend-item flex items-center gap-4 mb-3">
+              <input 
+                  type="text" 
+                  name="friends[]" 
+                  class="flex-1 px-4 py-2 border border-gray-300 rounded-md" 
+                  placeholder="Nombre del amigo" 
+                  required>
+              <button type="button" class="remove-friend text-red-500 hover:underline">Eliminar</button>
+          </div>
+      </div>
+      <button 
+          type="button" 
+          id="add-friend" 
+          class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+          Agregar amigo
+      </button>
+      <div class="text-center mt-6">
+          <button 
+              type="button" 
+              id="go-to-step-2" 
+              class="bg-green-500 text-white py-3 px-6 rounded-lg shadow hover:bg-green-600">
+              Agregar gastos
+          </button>
+      </div>
+  </div>
+
+  <!-- Paso 2: Agregar gastos -->
+  <form method="POST" action="{% url 'procesar_gastos' %}">
+    {% csrf_token %}
+    <div id="step-2" class="hidden">
+        <h3 class="text-2xl font-bold mb-4 text-gray-700">Paso 2: Agrega los gastos</h3>
+        <div id="expenses-list" class="mb-6"></div>
+        <button 
+            type="button" 
+            id="add-expense" 
+            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            Agregar gasto
+        </button>
+        <div class="flex justify-between items-center mt-6">
+            <button 
+                type="button" 
+                id="back-to-step-1" 
+                class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                Añadir amigo
+            </button>
+            <button 
+                type="submit" 
+                class="bg-green-500 text-white py-3 px-6 rounded-lg shadow hover:bg-green-600">
+                Calcular
+            </button>
+        </div>
+    </div>
+  </form>
+
+</div>
+
+<script src="{% static 'js/balances/input_data.js' %}"></script>
+
+{% endblock content %}
