@@ -31,3 +31,15 @@ Thumbs.db
 .vscode/
 *.swp
 applications/balances/__pycache__/views.cpython-39.pyc
+cuentasclaras/__pycache__/wsgi.cpython-313.pyc
+cuentasclaras/__pycache__/settings.cpython-313.pyc
+cuentasclaras/__pycache__/__init__.cpython-313.pyc
+applications/balances/migrations/__pycache__/__init__.cpython-313.pyc
+applications/balances/__pycache__/views.cpython-313.pyc
+applications/balances/__pycache__/urls.cpython-313.pyc
+applications/balances/__pycache__/models.cpython-313.pyc
+applications/balances/__pycache__/apps.cpython-313.pyc
+applications/balances/__pycache__/admin.cpython-313.pyc
+applications/balances/__pycache__/__init__.cpython-313.pyc
+gitignore
+cuentasclaras/__pycache__/urls.cpython-313.pyc
