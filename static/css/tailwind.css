@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Jersey 10 */
+@font-face {
+  font-family: 'Jersey 10';
+  src: url('/static/fonts/Jersey_10/Jersey10-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Jaro */
+@font-face {
+  font-family: 'Jaro';
+  src: url('/static/fonts/Jaro/static/Jaro-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Joan */
+@font-face {
+  font-family: 'Joan';
+  src: url('/static/fonts/Joan/Joan-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

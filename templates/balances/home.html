@@ -1,44 +1,36 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Lista de Gastos - CuentasClaras{% endblock %}
+{% block title %}Inicio - CuentasClaras{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="bg-blue-100 py-10">
-    <div class="container mx-auto text-center">
-        <h2 class="text-3xl font-bold mb-4">Divide tus gastos fácilmente</h2>
-        <p class="text-lg mb-6">Con CuentasClaras, gestionar tus finanzas con amigos es más sencillo que nunca.</p>
-        <a href="{% url 'input_data' %}" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-          Empezar
-        </a>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="py-10">
-    <div class="container mx-auto text-center">
-        <h2 class="text-2xl font-bold mb-6">Características</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white shadow p-6 rounded">
-                <h3 class="text-xl font-bold mb-2">Optimización de pagos</h3>
-                <p>Minimiza las transferencias necesarias para saldar cuentas.</p>
+<section class="bg-primary-medium py-20 text-neutral-white">
+    <div class="container mx-auto flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 text-center md:text-left">
+            <h1 class="text-4xl font-bold mb-6 font-title">¡Bienvenido a Cuentas Claras!</h1>
+            <p class="text-lg mb-6">
+                Aquí transformamos los problemas de pagos desiguales en soluciones simples y eficientes. Con nuestra plataforma, podrás organizar tus gastos de manera justa, equitativa y con tan solo un clic. ¡Haz que cada pago cuente!
+            </p>
+            <div class="flex justify-center md:justify-start space-x-4">
+                <a href="{% url 'input_data' %}" class="bg-buttonPrimary text-neutral-white py-2 px-4 rounded-full hover:bg-buttonPrimary-dark">Simular Gastos</a>
+                <a href="#" class="bg-buttonPrimary text-neutral-white py-2 px-4 rounded-full hover:bg-buttonPrimary-dark">Crear Cuenta</a>
             </div>
-            <div class="bg-white shadow p-6 rounded">
-                <h3 class="text-xl font-bold mb-2">Grupos personalizados</h3>
-                <p>Crea grupos y ajusta gastos según las necesidades.</p>
-            </div>
-            <div class="bg-white shadow p-6 rounded">
-                <h3 class="text-xl font-bold mb-2">Fácil de usar</h3>
-                <p>Interfaz intuitiva para que te concentres en lo que importa.</p>
-            </div>
+        </div>
+        <div class="md:w-1/2 mt-10 md:mt-0">
+            <img src="{% static 'img/Pagar_la_cena.jpg' %}" alt="Personas compartiendo cuentas en un restaurante" class="rounded-lg shadow-lg">
         </div>
     </div>
 </section>
 
-<!-- Footer -->
-<footer class="bg-gray-800 text-white py-4">
-    <div class="container mx-auto text-center">
-        <p>&copy; 2025 CuentasClaras. Todos los derechos reservados.</p>
-    </div>
-</footer>
+<section class="py-40 bg-neutral-veryLightGray relative">
+  <div class="absolute inset-0">
+      <img src="{% static 'img/flechas_saliendo_pantalla.jpg' %}" alt="Gráfica en pantalla" class="w-full h-full object-cover opacity-50 blur-sm">
+  </div>
+  <div class="container mx-auto relative z-10 text-center">
+      <div class="bg-buttonPrimary text-neutral-white py-4 px-8 rounded-full inline-block shadow-md hover:bg-buttonPrimary-dark">
+          <a href="{% url 'input_data' %}" class="text-xl font-bold">Simular Gastos</a>
+      </div>
+  </div>
+</section>
 {% endblock %}
+
