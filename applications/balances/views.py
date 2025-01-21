@@ -104,6 +104,11 @@ def procesar_gastos(request):
         try:
             # Parsear el cuerpo de la solicitud como JSON
             datos = json.loads(request.body)
+            print()
+            print()
+            print(datos)
+            print()
+            print()
 
             # Llamar a la función de cálculo de balances
             resultado = calcular_balances(datos)

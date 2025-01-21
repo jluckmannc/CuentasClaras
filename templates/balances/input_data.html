@@ -63,9 +63,22 @@
     </div>
   </form>
 
+  <div id="results" class="hidden"></div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'js/balances/input_data.js' %}"></script>
+<!-- <script src="{% static 'js/balances/input_data.js' %}"></script> -->
+<script type="module" src="{% static 'js/stateManager.js' %}"></script>
+<script type="module" src="{% static 'js/domHandlers.js' %}"></script>
+<script type="module" src="{% static 'js/apiService.js' %}"></script>
+<script type="module" src="{% static 'js/ResultRenderer.js' %}"></script>
+<script type="module" src="{% static 'js/utils.js' %}"></script>
+<script type="module">
+  import { initializeDOMHandlers } from "{% static 'js/domHandlers.js' %}";
+  document.addEventListener('DOMContentLoaded', () => {
+      initializeDOMHandlers();
+  });
+</script>
 
 {% endblock content %}

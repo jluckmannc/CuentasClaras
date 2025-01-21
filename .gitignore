@@ -43,3 +43,4 @@ applications/balances/__pycache__/admin.cpython-313.pyc
 applications/balances/__pycache__/__init__.cpython-313.pyc
 gitignore
 cuentasclaras/__pycache__/urls.cpython-313.pyc
+applications/balances/__pycache__/views.cpython-39.pyc
