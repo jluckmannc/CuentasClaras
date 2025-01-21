@@ -173,6 +173,12 @@ export function syncExpensesFromDOM() {
   });
 }
 
+// Función para mostrar el paso 3
+export function showStep3() {
+  document.getElementById('step-1').classList.add('hidden');
+  document.getElementById('step-2').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
+}
 // Inicializar todos los manejadores de eventos
 export function initializeDOMHandlers() {
     setupAddFriendHandler();
