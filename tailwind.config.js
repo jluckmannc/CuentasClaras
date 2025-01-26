@@ -7,16 +7,16 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          medium: '#4678B0', // Azul medio (para otros elementos si es necesario)
-          dark: '#2D567D',   // Azul oscuro (Navbar o Footer)
+          medium: '#072E33', // Verde medio (para otros elementos si es necesario)
+          dark: '#1A334A',   // Verde oscuro (Navbar o Footer)
         },
         neutral: {
-          white: '#FFFFFF',        // Blanco
-          lightGray: '#D9D9D9',    // Gris claro
-          veryLightGray: '#FCFCFC', // Gris muy claro
+          white: '#6DA5C0',        // Azul Cielo
+          lightGray: '#0F969C',    // Gris claro
+          veryLightGray: '#0f969C', // Gris muy claro
         },
         buttonPrimary: {
-          DEFAULT: '#B07846', // Color base del botón
+          DEFAULT: '#294D61', // Color base del botón
           dark: 'rgb(45, 86, 125)',     // Hover más oscuro
         },
       },
