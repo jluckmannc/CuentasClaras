@@ -749,7 +749,7 @@ video {
 
 .bg-buttonPrimary {
   --tw-bg-opacity: 1;
-  background-color: rgb(41 77 97 / var(--tw-bg-opacity, 1));
+  background-color: rgb(211 95 24 / var(--tw-bg-opacity, 1));
 }
 
 .bg-gray-50 {
@@ -769,17 +769,17 @@ video {
 
 .bg-neutral-veryLightGray {
   --tw-bg-opacity: 1;
-  background-color: rgb(15 150 156 / var(--tw-bg-opacity, 1));
+  background-color: rgb(0 200 223 / var(--tw-bg-opacity, 1));
 }
 
 .bg-primary-dark {
   --tw-bg-opacity: 1;
-  background-color: rgb(26 51 74 / var(--tw-bg-opacity, 1));
+  background-color: rgb(10 33 56 / var(--tw-bg-opacity, 1));
 }
 
 .bg-primary-medium {
   --tw-bg-opacity: 1;
-  background-color: rgb(7 46 51 / var(--tw-bg-opacity, 1));
+  background-color: rgb(0 54 98 / var(--tw-bg-opacity, 1));
 }
 
 .object-cover {
@@ -897,12 +897,12 @@ video {
 
 .text-neutral-white {
   --tw-text-opacity: 1;
-  color: rgb(109 165 192 / var(--tw-text-opacity, 1));
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
 .text-primary-dark {
   --tw-text-opacity: 1;
-  color: rgb(26 51 74 / var(--tw-text-opacity, 1));
+  color: rgb(10 33 56 / var(--tw-text-opacity, 1));
 }
 
 .text-red-500 {
@@ -1000,12 +1000,12 @@ video {
 
 .hover\:bg-primary-dark:hover {
   --tw-bg-opacity: 1;
-  background-color: rgb(26 51 74 / var(--tw-bg-opacity, 1));
+  background-color: rgb(10 33 56 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:text-neutral-lightGray:hover {
   --tw-text-opacity: 1;
-  color: rgb(15 150 156 / var(--tw-text-opacity, 1));
+  color: rgb(0 102 142 / var(--tw-text-opacity, 1));
 }
 
 .hover\:underline:hover {
