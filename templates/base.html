@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CuentasClaras{% endblock %}</title>
+    <title>Cuentas Claras</title>
     <link href="/static/css/output.css" rel="stylesheet">
 </head>
 <body class="bg-neutral-veryLightGray text-primary-dark">
@@ -20,11 +20,11 @@
             </div>
             <div class="text-2xl font-title font-bold"></div>
             <ul class="flex space-x-6">
-                <li><a href="#" class="hover:text-neutral-lightGray font-body">Inicio</a></li>
-                <li><a href="#" class="hover:text-neutral-lightGray font-body">Servicios</a></li>
-                <li><a href="#" class="hover:text-neutral-lightGray font-body">Simulador</a></li>
-                <li><a href="#" class="hover:text-neutral-lightGray font-body">App CuentasClaras</a></li>
-                <li><a href="#" class="hover:text-neutral-lightGray font-body">Ayuda</a></li>
+                <li><a href="{% url 'home' %}" class="hover:text-neutral-lightGray text-font-white">Inicio</a></li>
+                <li><a href="#" class="hover:text-neutral-lightGray text-font-white">Servicios</a></li>
+                <li><a href="#" class="hover:text-neutral-lightGray text-font-white">Simulador</a></li>
+                <li><a href="#" class="hover:text-neutral-lightGray text-font-white">App CuentasClaras</a></li>
+                <li><a href="#" class="hover:text-neutral-lightGray text-font-white">Ayuda</a></li>
             </ul>
             <a href="#" class="bg-buttonPrimary rounded-full text-neutral-white py-2 px-4 rounded hover:bg-primary-dark">Crear Cuenta</a>
         </div>
@@ -36,11 +36,11 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-primary-dark text-neutral-white py-6">
+    <!-- <footer class="bg-primary-dark text-neutral-white py-6">
         <div class="container mx-auto text-center">
             <p>&copy; 2025 CuentasClaras. Todos los derechos reservados.</p>
         </div>
-    </footer>
+    </footer> -->
 
 </body>
 </html>
