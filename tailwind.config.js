@@ -6,33 +6,38 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Paleta principal
         primary: {
-          medium: '#003662', // Azul medio (para otros elementos si es necesario)
-          dark: '#0A2138',   // Azul oscuro (Navbar o Footer)
+          DEFAULT: '#0A2138',    // Azul oscuro (navbar/footer)
+          light: '#003662',      // Azul medio
+          accent: '#00C8DF'      // Azul claro (detalles)
         },
+        
+        // Colores de acción
+        secondary: {
+          DEFAULT: '#D35F18',    // Naranja principal (botones)
+          hover: '#B84D0F'       // Naranja oscuro (hover)
+        },
+        
+        // Colores neutros
         neutral: {
-          white: '#FFFFFF',        // Colores Neutrales, se esta usando para la tipografia
-          lightGray: '#00668E',    // Azul Grisaseo, al parecer no se esta usando
-          veryLightGray: '#00C8DF', // Gris muy claro
+          DEFAULT: '#FCFCFC',    // Gris muy claro (fondos)
+          dark: '#00668E'        // Gris-azulado (bordes/texto)
         },
-        buttonPrimary: {
-          DEFAULT: '#D35F18', // Color base del botón
-          dark: 'rgb(45, 86, 125)',     // Hover más oscuro
-        },
-        extracolor:{
-          Darkcolor: '#4C0302', // este color se puede usar para remarcar o subrayar algunos textos
-        },
-        font: {
-          white: '#FFFFFF'
-          },
-        },
-      },
-      fontFamily: {
-        logo: ['Jersey 10', 'sans-serif'],
-        title: ['Jaro', 'serif'],
-        body: ['Joan', 'serif'],
+        
+        // Colores acentuales
+        accent: {
+          DEFAULT: '#4C0302',    // Rojo oscuro (destacados)
+          warning: '#FF3B30'     // Rojo claro (alertas)
+        }
       },
     },
+    fontFamily: {
+      logo: ['Jersey 10', 'sans-serif'],
+      title: ['Jaro', 'serif'],
+      body: ['Joan', 'serif'],
+    },
+  },
   plugins: [],
 }
 // module.exports = {

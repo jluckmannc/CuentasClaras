@@ -13,7 +13,7 @@
               <input 
                   type="text" 
                   name="friends[]" 
-                  class="flex-1 px-4 py-2 border border-gray-300 rounded-md" 
+                  class="flex-1 px-4 py-2 border border-neutral-dark rounded-md" 
                   placeholder="Nombre del amigo" 
                   required>
               <button type="button" class="remove-friend text-red-500 hover:underline">Eliminar</button>
@@ -51,7 +51,7 @@
             <button 
                 type="button" 
                 id="back-to-step-1" 
-                class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                class="bg-neutral0 text-white py-2 px-4 rounded hover:bg-gray-600">
                 Añadir amigo
             </button>
             <button 
@@ -68,7 +68,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- <script src="{% static 'js/balances/input_data.js' %}"></script> -->
 <script type="module" src="{% static 'js/stateManager.js' %}"></script>
 <script type="module" src="{% static 'js/domHandlers.js' %}"></script>
 <script type="module" src="{% static 'js/apiService.js' %}"></script>

@@ -17,7 +17,7 @@ export function setupAddFriendHandler() {
             <input 
                 type="text" 
                 name="friends[]" 
-                class="flex-1 px-4 py-2 border border-gray-300 rounded-md" 
+                class="flex-1 px-4 py-2 border border-neutral-dark rounded-md" 
                 placeholder="Nombre del amigo" 
                 required>
             <button type="button" class="remove-friend text-red-500 hover:underline">Eliminar</button>
@@ -80,14 +80,14 @@ export function setupBackToStep1Handler() {
 // Función para crear un elemento de gasto individual
 function createExpenseElement(expense, index) {
   const expenseDiv = document.createElement('div');
-  expenseDiv.classList.add('expense-item', 'mb-4', 'p-4', 'border', 'border-gray-300', 'rounded-md');
+  expenseDiv.classList.add('expense-item', 'mb-4', 'p-4', 'border', 'border-neutral-dark', 'rounded-md');
 
   expenseDiv.innerHTML = `
       <label class="block text-lg font-medium text-gray-700 mb-2">Nombre del gasto</label>
       <input 
           type="text" 
           name="expense_name_${index}" 
-          class="w-full px-4 py-2 mb-3 border border-gray-300 rounded-md" 
+          class="w-full px-4 py-2 mb-3 border border-neutral-dark rounded-md" 
           placeholder="Ejemplo: Cena, Taxi, etc." 
           value="${expense.name || ''}" 
           required>
@@ -96,14 +96,14 @@ function createExpenseElement(expense, index) {
       <input 
           type="number" 
           name="expense_amount_${index}" 
-          class="w-full px-4 py-2 mb-3 border border-gray-300 rounded-md" 
+          class="w-full px-4 py-2 mb-3 border border-neutral-dark rounded-md" 
           placeholder="Ejemplo: 10000" 
           value="${expense.amount || ''}" 
           min="0" 
           required>
 
       <label class="block text-md font-medium text-gray-700 mb-2">¿Quién pagó?</label>
-      <select name="payer_${index}" class="w-full px-4 py-2 mb-3 border border-gray-300 rounded-md" required>
+      <select name="payer_${index}" class="w-full px-4 py-2 mb-3 border border-neutral-dark rounded-md" required>
           <option value="" disabled ${!expense.payer ? 'selected' : ''}>Selecciona</option>
           ${getCurrentFriends().map(friend => `
               <option value="${friend}" ${expense.payer === friend ? 'selected' : ''}>${friend}</option>

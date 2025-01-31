@@ -7,7 +7,7 @@ export function mostrarResultados(data) {
   if (!resultsContainer) {
       resultsContainer = document.createElement('div');
       resultsContainer.id = 'results';
-      resultsContainer.classList.add('mt-6', 'p-4', 'border', 'border-gray-300', 'rounded-md', 'bg-gray-50');
+      resultsContainer.classList.add('mt-6', 'p-4', 'border', 'border-neutral-dark', 'rounded-md', 'bg-neutral');
       document.querySelector('form').parentElement.appendChild(resultsContainer);
   }
 
