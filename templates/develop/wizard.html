@@ -2,36 +2,36 @@
 {% load static %}
 
 {% block content %}
-<div class="flex flex-col items-center justify-start min-h-screen px-6 pt-12 bg-primary-light">
+<div class="flex flex-col items-center justify-start min-h-screen px-4 pt-8 md:px-6 md:pt-12 bg-primary-light">
 
   <!-- Logo -->
-  <img src="{% static 'img/logo.png' %}" alt="Logo Cuentas Claras" class="h-20 mb-6">
+  <img src="{% static 'img/logo.png' %}" alt="Logo Cuentas Claras" class="h-16 md:h-20 mb-6">
 
   <!-- Flujo de pasos -->
-  <div class="flex items-center justify-center mb-10 space-x-8">
+  <div class="flex items-center justify-center mb-8 md:mb-10 space-x-4 md:space-x-8">
     <div class="flex flex-col items-center">
       <div class="w-6 h-6 rounded-full bg-primary-dark flex items-center justify-center text-white text-sm">1</div>
-      <p class="mt-2 text-sm font-body text-primary-dark">Participantes</p>
+      <p class="mt-2 text-xs md:text-sm font-body text-primary-dark">Participantes</p>
     </div>
-    <div class="w-16 h-1 bg-primary-dark"></div>
+    <div class="w-10 h-1 bg-primary-dark md:w-16"></div>
     <div class="flex flex-col items-center">
       <div class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">2</div>
-      <p class="mt-2 text-sm font-body text-neutral-mid">Gastos</p>
+      <p class="mt-2 text-xs md:text-sm font-body text-neutral-mid">Gastos</p>
     </div>
-    <div class="w-16 h-1 bg-neutral-light"></div>
+    <div class="w-10 h-1 bg-neutral-light md:w-16"></div>
     <div class="flex flex-col items-center">
       <div class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">3</div>
-      <p class="mt-2 text-sm font-body text-neutral-mid">Resultado</p>
+      <p class="mt-2 text-xs md:text-sm font-body text-neutral-mid">Resultado</p>
     </div>
   </div>
 
   <!-- Formulario participantes -->
-  <div class="flex flex-col w-full max-w-md p-8 bg-white rounded-2xl shadow-lg">
-    <h2 class="text-2xl font-title text-primary-dark mb-4">¿Quiénes compartieron los gastos?</h2>
-    <p class="text-sm font-body text-neutral-mid mb-6">Añade a todas las personas que participaron en el gasto.</p>
+  <div class="flex flex-col w-full max-w-sm md:max-w-md p-6 md:p-8 mb-8 bg-white rounded-2xl shadow-lg transition-all duration-300 ease-in-out">
+    <h2 class="text-xl md:text-2xl font-title text-primary-dark mb-4">¿Quiénes compartieron los gastos?</h2>
+    <p class="text-xs md:text-sm font-body text-neutral-mid mb-6">Añade a todas las personas que participaron en el gasto.</p>
 
     <!-- Campo para agregar -->
-    <div class="flex w-full gap-2 mb-6">
+    <div class="flex flex-col md:flex-row w-full gap-2 mb-6">
       <input 
         type="text" 
         id="friend-input"
@@ -40,25 +40,25 @@
       >
       <button 
         id="add-friend" 
-        class="bg-primary hover:bg-primary-dark text-white font-bold px-5 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95">
+        class="bg-primary hover:bg-primary-dark text-white font-bold px-4 md:px-5 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95">
         Agregar
       </button>
     </div>
 
     <!-- Lista de participantes -->
-    <div id="friends-list" class="flex flex-wrap gap-2 mb-8">
-      <!-- Chips se generan aquí dinámicamente -->
+    <div id="friends-list" class="flex flex-wrap gap-2 mb-10 mt-4">
+      <!-- Aquí dinámicamente se agregan los chips -->
     </div>
 
-    <!-- Botones navegación -->
-    <div class="flex justify-between items-center">
-      <a href="{% url 'home' %}" class="text-primary-dark font-body hover:underline">Volver al inicio</a>
+    <!-- Botón continuar centrado -->
+    <div class="flex justify-center">
       <button 
         id="go-to-step-2" 
         class="bg-secondary hover:bg-secondary-hover text-white font-bold py-2 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95">
         Continuar
-     </button>
+      </button>
     </div>
+
   </div>
 
 </div>

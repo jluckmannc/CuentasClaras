@@ -7,40 +7,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cuentas Claras</title>
 
-  <!-- Fuente Poppins desde Google Fonts (opcionalmente después local) -->
+  <!-- Fuente Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-  <!-- Tu CSS compilado -->
+  <!-- Tu CSS de Tailwind -->
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
+
+  <!-- Pequeño script para abrir/cerrar menú -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuBtn = document.getElementById('menu-btn');
+      const menu = document.getElementById('menu');
+      
+      menuBtn.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+      });
+    });
+  </script>
 
 </head>
 <body class="bg-primary-light font-body text-primary-dark min-h-screen flex flex-col">
 
   <!-- Navbar -->
-  <nav class="bg-primary-dark py-4 px-8 flex justify-between items-center shadow-md">
-    <div class="flex items-center space-x-3">
-      <img src="{% static 'img/logo.png' %}" alt="Logo Cuentas Claras" class="h-10">
-      <span class="text-neutral font-logo text-2xl font-semibold">CUENTAS CLARAS</span>
+  <nav class="bg-primary-dark py-4 px-6 flex items-center justify-between shadow-md relative">
+    <div class="flex items-center space-x-2">
+      <img src="{% static 'img/logo.png' %}" alt="Logo Cuentas Claras" class="h-8">
+      <span class="text-neutral font-logo text-lg font-semibold">CUENTAS CLARAS</span>
     </div>
-    <div class="flex space-x-6 items-center">
-      <a href="#" class="text-neutral font-body text-sm hover:text-secondary transition-all duration-300 ease-in-out underline-offset-4 hover:underline">
+
+    <!-- Botón hamburguesa (sólo en móvil) -->
+    <button id="menu-btn" class="text-neutral focus:outline-none md:hidden text-2xl">
+      ☰
+    </button>
+
+    <!-- Menú de navegación -->
+    <div id="menu" class="hidden md:flex md:items-center md:space-x-6 absolute top-full left-0 w-full bg-primary-dark md:static md:w-auto md:bg-transparent p-6 md:p-0 space-y-4 md:space-y-0 flex-col md:flex-row z-50">
+      <a href="#" class="text-neutral font-body text-sm md:text-base hover:text-secondary transition-all duration-300 ease-in-out underline-offset-4 hover:underline">
         Inicio
       </a>
-      <a href="#" class="text-neutral font-body text-sm hover:text-secondary transition-all duration-300 ease-in-out underline-offset-4 hover:underline">
+      <a href="#" class="text-neutral font-body text-sm md:text-base hover:text-secondary transition-all duration-300 ease-in-out underline-offset-4 hover:underline">
         Servicios
       </a>
-      <a href="#" class="text-neutral font-body text-sm hover:text-secondary transition-all duration-300 ease-in-out underline-offset-4 hover:underline">
+      <a href="#" class="text-neutral font-body text-sm md:text-base hover:text-secondary transition-all duration-300 ease-in-out underline-offset-4 hover:underline">
         Ayuda
       </a>
-      
-      <a href="#" class="bg-secondary hover:bg-secondary-hover text-white font-body font-semibold py-2 px-6 rounded-full text-sm transform hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out">
+      <a href="#" class="bg-secondary hover:bg-secondary-hover text-white font-body font-semibold py-2 px-4 rounded-full text-sm md:text-base transform hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out">
         Crear Cuenta
       </a>
     </div>
   </nav>
 
   <!-- Contenido principal -->
-  <main class="flex-1">
+  <main class="flex-1 pb-16 md:pb-24">
     {% block content %}
     {% endblock %}
   </main>
