@@ -18,25 +18,6 @@ function despintarConector(index) {
   }
 }
 
-// Actualizar todos los conectores según el paso
-function actualizarConectores() {
-  const conector1a2 = document.getElementById('conector-1-2');
-  const conector2a3 = document.getElementById('conector-2-3');
-
-  if (pasoActual >= 2) {
-    // Si estamos en paso 2 o más, pintar conector del 1 al 2
-    conector1a2.className = 'w-10 h-1 bg-primary-dark md:w-16';
-  } else {
-    conector1a2.className = 'w-10 h-1 bg-neutral-light md:w-16';
-  }
-
-  if (pasoActual >= 3) {
-    // Si estamos en paso 3 o más, pintar conector del 2 al 3
-    conector2a3.className = 'w-10 h-1 bg-primary-dark md:w-16';
-  } else {
-    conector2a3.className = 'w-10 h-1 bg-neutral-light md:w-16';
-  }
-}
 
 
 // Actualizar visualmente los pasos (números y textos)
@@ -59,7 +40,6 @@ export function actualizarVisualPasos() {
     }
   });
 
-  actualizarConectores();
 }
 
 // Mostrar u ocultar pantallas
@@ -78,38 +58,52 @@ export function mostrarPasoCorrecto() {
 
 // Avanzar al siguiente paso
 export function pasoSiguiente() {
-  if (pasoActual < 3) { // Evitamos seguir aumentando en vacío
-    pasoActual++;
-    actualizarVisualPasos();
-    mostrarPasoCorrecto();
+  if (pasoActual === 1) {
+    const barra = document.querySelector('#conector-1-2 .barra-interna');
+    if (barra) {
+      barra.style.width = '100%';
+
+      barra.addEventListener('transitionend', function onTransitionEnd(e) {
+        if (e.propertyName === 'width') {
+          barra.removeEventListener('transitionend', onTransitionEnd);
+          pasoActual = 2;
+          actualizarVisualPasos();
+          mostrarPasoCorrecto();
+        }
+      }, { once: true });
+    }
+  } else if (pasoActual === 2) {
+    const barra = document.querySelector('#conector-2-3 .barra-interna');
+    if (barra) {
+      barra.style.width = '100%';
+
+      barra.addEventListener('transitionend', function onTransitionEnd(e) {
+        if (e.propertyName === 'width') {
+          barra.removeEventListener('transitionend', onTransitionEnd);
+          pasoActual = 3;
+          actualizarVisualPasos();
+          mostrarPasoCorrecto();
+        }
+      }, { once: true });
+    }
   }
 }
 
-// Inicializar la navegación del wizard
+
+
 export function initializeWizardNavigation() {
   const botonPaso1 = document.getElementById('go-to-step-2');
   const botonPaso2 = document.getElementById('go-to-step-3');
 
   if (botonPaso1) {
-    botonPaso1.addEventListener('click', () => {
-      pasoActual = 2;
-      actualizarVisualPasos();
-      actualizarConectores();  // <---- Asegúrate de esto
-      mostrarPasoCorrecto();
-    });
+    botonPaso1.addEventListener('click', pasoSiguiente);
   }
 
   if (botonPaso2) {
-    botonPaso2.addEventListener('click', () => {
-      pasoActual = 3;
-      actualizarVisualPasos();
-      actualizarConectores();  // <---- Asegúrate de esto también
-      mostrarPasoCorrecto();
-    });
+    botonPaso2.addEventListener('click', pasoSiguiente);
   }
 
   actualizarVisualPasos();
-  actualizarConectores();   // <---- También en la carga inicial
   mostrarPasoCorrecto();
 }
 
