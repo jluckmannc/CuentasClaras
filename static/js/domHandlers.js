@@ -140,3 +140,46 @@ export function initializeGastosHandlers() {
     gastosContainer.appendChild(newCard);
   });
 }
+
+
+export function initializeParticipantSelection() {
+  const participantButtons = document.querySelectorAll('.participant-btn');
+  const toggleAllBtn = document.getElementById('toggle-all');
+  const toggleIcon = document.getElementById('toggle-icon');
+
+  if (!participantButtons.length) return; // por si acaso
+
+  participantButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('bg-secondary')) {
+        btn.classList.remove('bg-secondary', 'text-white');
+        btn.classList.add('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
+      } else {
+        btn.classList.add('bg-secondary', 'text-white');
+        btn.classList.remove('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
+      }
+    });
+  });
+
+  if (toggleAllBtn) {
+    toggleAllBtn.addEventListener('click', () => {
+      const allSelected = Array.from(participantButtons).every(btn => btn.classList.contains('bg-secondary'));
+      participantButtons.forEach(btn => {
+        if (allSelected) {
+          btn.classList.add('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
+          btn.classList.remove('bg-secondary', 'text-white');
+        } else {
+          btn.classList.add('bg-secondary', 'text-white');
+          btn.classList.remove('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
+        }
+      });
+
+      // Cambiar el ícono según el estado
+      if (toggleIcon && toggleAllBtn) {
+        toggleIcon.src = allSelected
+          ? toggleAllBtn.dataset.checkSrc
+          : toggleAllBtn.dataset.uncheckSrc;
+      }
+    });
+  }
+}

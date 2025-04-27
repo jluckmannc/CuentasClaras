@@ -95,6 +95,16 @@ export function initializeWizardNavigation() {
   const botonPaso1 = document.getElementById('go-to-step-2');
   const botonPaso2 = document.getElementById('go-to-step-3');
 
+  // Detectar el hash en la URL al cargar
+  if (window.location.hash === '#paso2') {
+    pasoActual = 2;
+  } else if (window.location.hash === '#paso3') {
+    pasoActual = 3;
+  } else {
+    pasoActual = 1;
+  }
+
+
   if (botonPaso1) {
     botonPaso1.addEventListener('click', pasoSiguiente);
   }
