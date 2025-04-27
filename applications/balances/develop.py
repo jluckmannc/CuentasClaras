@@ -9,3 +9,6 @@ def add_friends(request):
 
 def add_expense(request):
     return render(request, 'develop/add_expense.html')
+
+def wizard(request):
+    return render(request, 'develop/wizard.html')

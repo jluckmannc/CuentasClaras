@@ -8,9 +8,9 @@ module.exports = {
       colors: {
         // Colores principales
         primary: {
-          DEFAULT: '#0077ff',     // Azul vibrante (botones principales)
-          dark: '#005fcc',         // Azul más oscuro (hover)
-          light: '#f1f6fb',        // Azul hielo (fondos principales)
+          DEFAULT: '#0077ff',      // Azul vibrante (botones principales)
+          dark: '#0a2540',          // Azul oscuro real para navbar
+          light: '#f1f6fb',         // Azul hielo (fondos principales)
         },
 
         // Colores de acción

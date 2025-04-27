@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import home, input_data, procesar_gastos
-from .develop import add_friends, add_expense
+from .develop import add_friends, add_expense, wizard
 
 urlpatterns = [
     path('', home, name='home'),
@@ -9,4 +9,5 @@ urlpatterns = [
     # Develop
     path('add_friends/', add_friends, name='add_friends'),
     path('add_expense/', add_expense, name='add_expense'),
+    path('organizar-gastos/', wizard, name='wizard'),
 ]

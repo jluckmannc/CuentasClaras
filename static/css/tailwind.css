@@ -2,26 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Jersey 10 */
+/* Poppins */
 @font-face {
-  font-family: 'Jersey 10';
-  src: url('/static/fonts/Jersey_10/Jersey10-Regular.ttf') format('truetype');
-  font-weight: normal;
+  font-family: 'Poppins';
+  src: url('/static/fonts/Poppins/Poppins-Regular.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
 }
-
-/* Jaro */
 @font-face {
-  font-family: 'Jaro';
-  src: url('/static/fonts/Jaro/static/Jaro-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-/* Joan */
-@font-face {
-  font-family: 'Joan';
-  src: url('/static/fonts/Joan/Joan-Regular.ttf') format('truetype');
-  font-weight: normal;
+  font-family: 'Poppins';
+  src: url('/static/fonts/Poppins/Poppins-SemiBold.ttf') format('truetype');
+  font-weight: 600;
   font-style: normal;
 }
