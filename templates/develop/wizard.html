@@ -122,7 +122,7 @@
       <!-- Participantes -->
       <div class="flex flex-col w-full p-5 rounded-2xl border border-neutral-light">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-primary-dark font-bold text-base">Participantes</h3>
+          <h3 class="text-primary-dark font-bold text-base">¿Quién participó en este gasto?	</h3>
           <button id="toggle-all" 
           class="focus:outline-none"
           data-check-src="{% static 'img/check.png' %}" 
@@ -158,36 +158,31 @@
   </div>
 
   <!-- Div 2: Gasto "Entradas al cine" -->
-  <div class="flex justify-between items-start p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-6">
-    <div class="flex flex-col">
-      <h3 class="text-primary-dark font-bold text-base">Entradas al cine</h3>
-      <p class="text-neutral-mid text-xs">Participaron Bruno, Carla</p>
-      <p class="text-neutral-mid text-xs">Pagó Amanda</p>
-    </div>
-    <div class="flex flex-col items-end">
-      <p class="text-primary-dark font-bold text-base">$15.000</p>
-      <div class="flex gap-2 mt-2">
-        <button class="px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all">Editar</button>
-        <button class="px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all">Eliminar</button>
-      </div>
+<!-- Tarjeta principal -->
+<div onclick="toggleAccordion(event)" class="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-6 relative cursor-pointer overflow-hidden transition-all flex flex-col gap-2">
+
+  <!-- Sección fija: título y monto -->
+  <div class="flex justify-between items-start">
+    <h3 class="text-primary-dark font-bold text-base">Entradas al cine</h3>
+    <p class="text-primary-dark font-bold text-base">$15.000</p>
+  </div>
+
+  <!-- Contenido del acordeón -->
+  <div id="accordionContent" class="transition-all ease-linear duration-300 overflow-hidden max-h-0">
+    <p class="text-neutral-mid text-xs mt-1">Participaron Bruno, Carla, Diego, Elena, Fernando, Carla, Diego, Elena, Fernando, Bruno, Carla, Diego, Elena, Fernando, Bruno</p>
+  </div>
+
+  <!-- Pagó + botones -->
+  <div class="flex justify-between items-center mt-2">
+    <p class="text-neutral-mid text-xs">Pagó <strong>Amanda</strong></p>
+    <div class="flex gap-2">
+      <button onclick="editGasto(event)" class="px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all">Editar</button>
+      <button onclick="deleteGasto(event)" class="px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all">Eliminar</button>
     </div>
   </div>
 
-  <!-- Div 3: Gasto "Cena en Burgers" -->
-  <div class="flex justify-between items-start p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-8">
-    <div class="flex flex-col">
-      <h3 class="text-primary-dark font-bold text-base">Cena en Burgers</h3>
-      <p class="text-neutral-mid text-xs">Participaron Bruno, Carla</p>
-      <p class="text-neutral-mid text-xs">Pagó Amanda</p>
-    </div>
-    <div class="flex flex-col items-end">
-      <p class="text-primary-dark font-bold text-base">$25.000</p>
-      <div class="flex gap-2 mt-2">
-        <button class="px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all">Editar</button>
-        <button class="px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all">Eliminar</button>
-      </div>
-    </div>
-  </div>
+</div>
+
 
   <!-- Botón Continuar -->
   <div class="flex justify-center">
@@ -196,9 +191,91 @@
     </button>
   </div>
 
+
+
+<!-- Botón "Editar" ya dentro de tu tarjeta -->
+<!-- (este ya lo tienes, solo agregamos la función correcta abajo) -->
+
+<!-- Modal de Editar Gasto -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-2xl shadow-lg p-8 w-[90%] max-w-md relative">
+
+    <!-- Título -->
+    <h2 class="text-primary-dark font-bold text-xl text-center mb-6">Editar Gasto</h2>
+
+    <!-- Formulario -->
+    <form id="editForm" class="flex flex-col gap-4">
+
+      <!-- Nombre del gasto -->
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold text-neutral-mid mb-1" for="gastoNombreEdit">Nombre del Gasto</label>
+        <input id="gastoNombreEdit" type="text" class="border border-neutral-mid rounded-lg p-2 text-sm focus:outline-primary-dark" placeholder="Nombre del gasto" value="Entradas al cine">
+      </div>
+
+      <!-- Monto -->
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold text-neutral-mid mb-1" for="gastoMontoEdit">Monto</label>
+        <input id="gastoMontoEdit" type="number" class="border border-neutral-mid rounded-lg p-2 text-sm focus:outline-primary-dark" placeholder="Monto" value="15000">
+      </div>
+
+      <!-- Pagador -->
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold text-neutral-mid mb-1" for="gastoPagadorEdit">Pagó</label>
+        <select id="gastoPagadorEdit" class="border border-neutral-mid rounded-lg p-2 text-sm focus:outline-primary-dark">
+          <option>Amanda</option>
+          <option>Bruno</option>
+          <option>Carla</option>
+          <option>Diego</option>
+          <option>Elena</option>
+          <option>Fernando</option>
+        </select>
+      </div>
+
+      <!-- Participantes -->
+      <div class="flex flex-col p-5 border border-neutral-light rounded-2xl">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-primary-dark font-bold text-base">¿Quién participó en este gasto?</h3>
+        </div>
+
+        <div id="gastoParticipantesGridEdit" class="flex flex-wrap gap-2">
+          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-primary-light text-primary-dark border-primary-dark">
+            Amanda
+          </button>
+          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-primary-light text-primary-dark border-primary-dark">
+            Bruno
+          </button>
+          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-white text-primary-dark border-primary-dark">
+            Carla
+          </button>
+          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-white text-primary-dark border-primary-dark">
+            Diego
+          </button>
+          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-white text-primary-dark border-primary-dark">
+            Elena
+          </button>
+          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-white text-primary-dark border-primary-dark">
+            Fernando
+          </button>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex justify-end gap-2 mt-4">
+        <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-full text-xs bg-neutral-light hover:bg-neutral-mid text-primary-dark transition-all">Cancelar</button>
+        <button type="submit" class="px-4 py-2 rounded-full text-xs bg-primary-dark hover:bg-primary-mid text-white transition-all">Guardar</button>
+      </div>
+
+    </form>
+  </div>
 </div>
 
-  
+<!-- Toast de éxito -->
+<div id="toastSuccess" class="fixed bottom-6 right-6 bg-green-500 text-white py-2 px-4 rounded-lg shadow-md hidden z-50 text-sm">
+  Gasto editado correctamente
+</div>
+
+
+</div>
 
 <!-- Scripts -->
 <script type="module" src="{% static 'js/stateManager.js' %}"></script>
@@ -208,13 +285,24 @@
 <script type="module" src="{% static 'js/utils.js' %}"></script>
 
 <script type="module">
-  import { initializeDOMHandlers, initializeGastosHandlers, initializeParticipantSelection } from "{% static 'js/domHandlers.js' %}";
+  import { 
+  initializeDOMHandlers, 
+  initializeGastosHandlers, 
+  initializeParticipantSelection, 
+  openModal, 
+  closeModal, 
+  toggleAccordion, 
+  editGasto, 
+  deleteGasto, 
+  initializeEditModalHandlers 
+  } from "{% static 'js/domHandlers.js' %}";
   import { initializeWizardNavigation } from "{% static 'js/utils.js' %}";
   document.addEventListener('DOMContentLoaded', () => {
     initializeDOMHandlers();
     initializeGastosHandlers();
     initializeWizardNavigation();
     initializeParticipantSelection();
+    initializeEditModalHandlers();
   });
 </script>
 {% endblock %}

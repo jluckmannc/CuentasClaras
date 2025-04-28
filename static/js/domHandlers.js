@@ -183,3 +183,80 @@ export function initializeParticipantSelection() {
     });
   }
 }
+
+
+
+// MODAL CONTROL
+export function openModal() {
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+export function closeModal() {
+  document.getElementById('editModal').classList.add('hidden');
+}
+
+export function showToast(message) {
+  const toast = document.getElementById('toastSuccess');
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 2000);
+}
+
+// ACORDEÓN PARTICIPANTES
+export function toggleAccordion(event) {
+  if (event.target.tagName.toLowerCase() === 'button') {
+    return;
+  }
+
+  const content = document.getElementById('accordionContent');
+
+  if (content.classList.contains('max-h-0')) {
+    content.classList.remove('max-h-0');
+    content.classList.add('max-h-96'); // Puedes ajustar el máximo
+  } else {
+    content.classList.add('max-h-0');
+    content.classList.remove('max-h-96');
+  }
+}
+
+// BOTÓN EDITAR
+export function editGasto(event) {
+  event.stopPropagation();
+  openModal();
+}
+
+// BOTÓN ELIMINAR
+export function deleteGasto(event) {
+  event.stopPropagation();
+  alert('Eliminar gasto'); // (opcional: luego agregar confirmación)
+}
+
+// INICIALIZADOR DEL MODAL
+export function initializeEditModalHandlers() {
+  // Seleccionar/Deseleccionar participantes dentro del modal
+  document.querySelectorAll('.participant-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('bg-primary-light');
+      btn.classList.toggle('bg-white');
+    });
+  });
+
+  // Capturar submit del formulario de edición
+  const editForm = document.getElementById('editForm');
+  if (editForm) {
+    editForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      closeModal();
+      showToast('Gasto editado correctamente');
+    });
+  }
+}
+
+// Exponer para el HTML
+window.toggleAccordion = toggleAccordion;
+window.editGasto = editGasto;
+window.deleteGasto = deleteGasto;
+window.openModal = openModal;
+window.closeModal = closeModal;
