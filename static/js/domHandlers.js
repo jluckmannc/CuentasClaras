@@ -1,7 +1,6 @@
 // domHandlers.js
 import { setParticipantButtonState, pasoSiguiente } from './utils.js';
-
-export const participantsList = []; // Lista global de participantes
+import { participantsList } from './stateManager.js';
 
 // Inicializador del Paso 1 (Participantes)
 export function initializeDOMHandlers() {
@@ -85,61 +84,9 @@ export function initializeDOMHandlers() {
 }
 
 // Inicializador del Paso 2 (Gastos)
-export function initializeGastosHandlers() {
-  const gastosContainer = document.getElementById('gastos-container');
-  const addGastoButton = document.getElementById('add-gasto');
 
-  function createGastoCard() {
-    const card = document.createElement('div');
-    card.className = 'flex flex-col gap-4 p-6 mb-6 bg-white rounded-2xl shadow-lg transition-all duration-300 ease-in-out';
 
-    // Inputs y campos
-    const gastoInput = document.createElement('input');
-    gastoInput.type = 'text';
-    gastoInput.placeholder = '¿Qué gasto quieres agregar? (Ej: Entrada al cine)';
-    gastoInput.className = 'w-full px-4 py-2 border border-neutral-light rounded-lg font-input text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark';
 
-    const montoInput = document.createElement('input');
-    montoInput.type = 'number';
-    montoInput.placeholder = 'Monto total (Ej: 20000)';
-    montoInput.className = 'w-full px-4 py-2 border border-neutral-light rounded-lg font-input text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark';
-
-    const pagadorSelect = document.createElement('select');
-    pagadorSelect.className = 'w-full px-4 py-2 border border-neutral-light rounded-lg font-input text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark';
-    participantsList.forEach(name => {
-      const option = document.createElement('option');
-      option.value = name;
-      option.textContent = name;
-      pagadorSelect.appendChild(option);
-    });
-
-    const participantsContainer = document.createElement('div');
-    participantsContainer.className = 'flex flex-wrap gap-2';
-    participantsList.forEach(name => {
-      const label = document.createElement('label');
-      label.className = 'flex items-center space-x-2 text-primary-dark text-sm';
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.value = name;
-      checkbox.className = 'form-checkbox h-4 w-4 text-primary focus:ring-primary-dark';
-      label.appendChild(checkbox);
-      label.appendChild(document.createTextNode(name));
-      participantsContainer.appendChild(label);
-    });
-
-    card.appendChild(gastoInput);
-    card.appendChild(montoInput);
-    card.appendChild(pagadorSelect);
-    card.appendChild(participantsContainer);
-
-    return card;
-  }
-
-  addGastoButton.addEventListener('click', () => {
-    const newCard = createGastoCard();
-    gastosContainer.appendChild(newCard);
-  });
-}
 
 
 export function setupParticipantToggle(buttonGroupSelector, toggleButtonSelector, toggleIconSelector = null) {
@@ -151,6 +98,8 @@ export function setupParticipantToggle(buttonGroupSelector, toggleButtonSelector
 
   participantButtons.forEach(btn => {
     btn.addEventListener('click', () => {
+      console.log('click');
+      
       const isSelected = btn.classList.contains('bg-secondary');
       setParticipantButtonState(btn, !isSelected);
     });
@@ -170,8 +119,133 @@ export function setupParticipantToggle(buttonGroupSelector, toggleButtonSelector
   }
 }
 
-export function initializeParticipantSelection() {
+// 🔹 Función para llenar el select de pagadores
+function cargarPagadores() {
+  const pagadorSelect = document.getElementById('gasto-pagador-select');
+
+  participantsList.forEach(participant => {
+    const option = document.createElement('option');
+    option.value = participant.nombre;
+    option.textContent = participant.nombre;
+    pagadorSelect.appendChild(option);
+  });
+}
+
+// 🔹 Función para crear los botones de participantes
+function cargarBotonesParticipantes() {
+  const participantesGrid = document.getElementById('gasto-participantes-grid');
+
+  participantsList.forEach(participant => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'participant-btn px-3 py-1 rounded-full border text-xs bg-white text-primary-dark border-primary-dark hover:bg-primary-light focus:outline-none transition-all duration-300';
+    button.textContent = participant.nombre;
+    participantesGrid.appendChild(button);
+  });
+
+  // ⚡ Una vez creados los botones, inicializar selección
   setupParticipantToggle('#gasto-participantes-grid', '#toggle-all', '#toggle-icon');
+}
+
+// 🔹 Función para crear una tarjeta de gasto
+function crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados) {
+  const card = document.createElement('div');
+  card.className = 'p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-6 relative cursor-pointer overflow-hidden flex flex-col gap-2';
+  card.setAttribute('onclick', 'toggleAccordion(event)');
+
+  const headerDiv = document.createElement('div');
+  headerDiv.className = 'flex justify-between items-start';
+
+  const title = document.createElement('h3');
+  title.className = 'text-primary-dark font-bold text-base';
+  title.textContent = nombreGasto;
+
+  const amount = document.createElement('p');
+  amount.className = 'text-primary-dark font-bold text-base';
+  amount.textContent = `$${parseInt(monto).toLocaleString('es-CL')}`;
+
+  headerDiv.appendChild(title);
+  headerDiv.appendChild(amount);
+
+  const accordionDiv = document.createElement('div');
+  accordionDiv.id = 'accordionContent';
+  accordionDiv.className = 'transition-all ease-linear duration-300 overflow-hidden max-h-0';
+
+  const participantsText = document.createElement('p');
+  participantsText.className = 'text-neutral-mid text-xs mt-1';
+  participantsText.textContent = `Participaron ${participantesSeleccionados.join(', ')}`;
+
+  accordionDiv.appendChild(participantsText);
+
+  const footerDiv = document.createElement('div');
+  footerDiv.className = 'flex justify-between items-center mt-2';
+
+  const payerInfo = document.createElement('p');
+  payerInfo.className = 'text-neutral-mid text-xs';
+  payerInfo.innerHTML = `Pagó <strong>${pagador}</strong>`;
+
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.className = 'flex gap-2';
+
+  const editBtn = document.createElement('button');
+  editBtn.className = 'px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all';
+  editBtn.textContent = 'Editar';
+  editBtn.setAttribute('onclick', 'editGasto(event)');
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all';
+  deleteBtn.textContent = 'Eliminar';
+  deleteBtn.setAttribute('onclick', 'deleteGasto(event)');
+
+  buttonsDiv.appendChild(editBtn);
+  buttonsDiv.appendChild(deleteBtn);
+
+  footerDiv.appendChild(payerInfo);
+  footerDiv.appendChild(buttonsDiv);
+
+  card.appendChild(headerDiv);
+  card.appendChild(accordionDiv);
+  card.appendChild(footerDiv);
+
+  return card;
+}
+
+// 🔹 Función para limpiar el formulario
+function limpiarFormularioGasto() {
+  document.getElementById('gasto-nombre-input').value = '';
+  document.getElementById('gasto-monto-input').value = '';
+  document.getElementById('gasto-pagador-select').selectedIndex = 0;
+
+  document.querySelectorAll('.participant-btn').forEach(btn => {
+    btn.classList.remove('bg-secondary', 'text-white');
+    btn.classList.add('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
+  });
+}
+
+// 🔹 Función principal de inicialización
+export function initializeGastosHandlers() {
+  const gastosContainer = document.getElementById('gastos-container');
+  const addGastoButton = document.getElementById('add-gasto');
+
+  cargarPagadores();
+  cargarBotonesParticipantes();
+
+  addGastoButton.addEventListener('click', () => {
+    const nombreGasto = document.getElementById('gasto-nombre-input').value.trim();
+    const monto = document.getElementById('gasto-monto-input').value.trim();
+    const pagador = document.getElementById('gasto-pagador-select').value;
+    const participantesSeleccionados = Array.from(document.querySelectorAll('.participant-btn.bg-secondary')).map(btn => btn.textContent.trim());
+
+    if (!nombreGasto || !monto || !pagador || participantesSeleccionados.length === 0) {
+      alert('Por favor completa todos los campos y selecciona al menos un participante.');
+      return;
+    }
+
+    const newCard = crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados);
+    gastosContainer.appendChild(newCard);
+
+    limpiarFormularioGasto();
+  });
 }
 
 

@@ -128,24 +128,7 @@
         </div>
 
         <div id="gasto-participantes-grid" class="flex flex-wrap gap-2">
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs focus:outline-none transition-all duration-300 bg-white text-primary-dark border-primary-dark hover:bg-primary-light">
-            Amanda
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs focus:outline-none transition-all duration-300 bg-white text-primary-dark border-primary-dark hover:bg-primary-light">
-            Bruno
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs focus:outline-none transition-all duration-300 bg-white text-primary-dark border-primary-dark hover:bg-primary-light">
-            Carla
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs focus:outline-none transition-all duration-300 bg-white text-primary-dark border-primary-dark hover:bg-primary-light">
-            Diego
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs focus:outline-none transition-all duration-300 bg-white text-primary-dark border-primary-dark hover:bg-primary-light">
-            Elena
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs focus:outline-none transition-all duration-300 bg-white text-primary-dark border-primary-dark hover:bg-primary-light">
-            Fernando
-          </button>
+          
         </div>
       </div>
       <div class="flex justify-center mt-4">
@@ -165,27 +148,6 @@
 <!-- Tarjeta principal -->
 <div id="gastos-container" class="flex flex-col gap-6 mb-8">
   <!-- Aquí se agregarán los nuevos gastos -->
-  <!-- <div onclick="toggleAccordion(event)" class="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-6 relative cursor-pointer overflow-hidden transition-all flex flex-col gap-2">
-
-    <div class="flex justify-between items-start">
-      <h3 class="text-primary-dark font-bold text-base">Entradas al cine</h3>
-      <p class="text-primary-dark font-bold text-base">$15.000</p>
-    </div>
-  
-    <div id="accordionContent" class="transition-all ease-linear duration-300 overflow-hidden max-h-0">
-      <p class="text-neutral-mid text-xs mt-1">Participaron Bruno, Carla, Diego, Elena, Fernando, Carla, Diego, Elena, Fernando, Bruno, Carla, Diego, Elena, Fernando, Bruno</p>
-    </div>
-  
-    <div class="flex justify-between items-center mt-2">
-      <p class="text-neutral-mid text-xs">Pagó <strong>Amanda</strong></p>
-      <div class="flex gap-2">
-        <button onclick="editGasto(event)" class="px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all">Editar</button>
-        <button onclick="deleteGasto(event)" class="px-3 py-1 bg-neutral-light hover:bg-neutral-mid text-primary-dark rounded-full text-xs transition-all">Eliminar</button>
-      </div>
-    </div>
-  
-  </div> -->
-  
 </div>
 
 
@@ -227,12 +189,6 @@
       <div class="flex flex-col">
         <label class="text-sm font-semibold text-neutral-mid mb-1" for="gastoPagadorEdit">Pagó</label>
         <select id="gastoPagadorEdit" class="border border-neutral-mid rounded-lg p-2 text-sm focus:outline-primary-dark">
-          <option>Amanda</option>
-          <option>Bruno</option>
-          <option>Carla</option>
-          <option>Diego</option>
-          <option>Elena</option>
-          <option>Fernando</option>
         </select>
       </div>
 
@@ -243,24 +199,6 @@
         </div>
 
         <div id="gastoParticipantesGridEdit" class="flex flex-wrap gap-2">
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-primary-light text-primary-dark border-primary-dark">
-            Amanda
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-primary-light text-primary-dark border-primary-dark">
-            Bruno
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-white text-primary-dark border-primary-dark">
-            Carla
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-white text-primary-dark border-primary-dark">
-            Diego
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-white text-primary-dark border-primary-dark">
-            Elena
-          </button>
-          <button type="button" class="participant-btn px-3 py-1 rounded-full border text-xs bg-white text-primary-dark border-primary-dark">
-            Fernando
-          </button>
         </div>
       </div>
 
@@ -293,7 +231,6 @@
   import { 
   initializeDOMHandlers, 
   initializeGastosHandlers, 
-  initializeParticipantSelection, 
   openModal, 
   closeModal, 
   toggleAccordion, 
@@ -306,7 +243,6 @@
     initializeDOMHandlers();
     initializeGastosHandlers();
     initializeWizardNavigation();
-    initializeParticipantSelection();
     initializeEditModalHandlers();
   });
 </script>
