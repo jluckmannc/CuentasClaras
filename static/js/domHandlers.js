@@ -1,5 +1,5 @@
 // domHandlers.js
-import { actualizarVisualPasos, mostrarPasoCorrecto, pasoSiguiente } from './utils.js';
+import { setParticipantButtonState, pasoSiguiente } from './utils.js';
 
 export const participantsList = []; // Lista global de participantes
 
@@ -142,40 +142,26 @@ export function initializeGastosHandlers() {
 }
 
 
-export function initializeParticipantSelection() {
-  const participantButtons = document.querySelectorAll('.participant-btn');
-  const toggleAllBtn = document.getElementById('toggle-all');
-  const toggleIcon = document.getElementById('toggle-icon');
+export function setupParticipantToggle(buttonGroupSelector, toggleButtonSelector, toggleIconSelector = null) {
+  const participantButtons = document.querySelectorAll(`${buttonGroupSelector} .participant-btn`);
+  const toggleAllBtn = toggleButtonSelector ? document.querySelector(toggleButtonSelector) : null;
+  const toggleIcon = toggleIconSelector ? document.querySelector(toggleIconSelector) : null;
 
-  if (!participantButtons.length) return; // por si acaso
+  if (!participantButtons.length) return;
 
   participantButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.classList.contains('bg-secondary')) {
-        btn.classList.remove('bg-secondary', 'text-white');
-        btn.classList.add('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
-      } else {
-        btn.classList.add('bg-secondary', 'text-white');
-        btn.classList.remove('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
-      }
+      const isSelected = btn.classList.contains('bg-secondary');
+      setParticipantButtonState(btn, !isSelected);
     });
   });
 
   if (toggleAllBtn) {
     toggleAllBtn.addEventListener('click', () => {
       const allSelected = Array.from(participantButtons).every(btn => btn.classList.contains('bg-secondary'));
-      participantButtons.forEach(btn => {
-        if (allSelected) {
-          btn.classList.add('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
-          btn.classList.remove('bg-secondary', 'text-white');
-        } else {
-          btn.classList.add('bg-secondary', 'text-white');
-          btn.classList.remove('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
-        }
-      });
+      participantButtons.forEach(btn => setParticipantButtonState(btn, !allSelected));
 
-      // Cambiar el ícono según el estado
-      if (toggleIcon && toggleAllBtn) {
+      if (toggleIcon) {
         toggleIcon.src = allSelected
           ? toggleAllBtn.dataset.checkSrc
           : toggleAllBtn.dataset.uncheckSrc;
@@ -184,9 +170,29 @@ export function initializeParticipantSelection() {
   }
 }
 
+export function initializeParticipantSelection() {
+  setupParticipantToggle('#gasto-participantes-grid', '#toggle-all', '#toggle-icon');
+}
 
 
 // MODAL CONTROL
+export function initializeEditModalHandlers() {
+  const editForm = document.getElementById('editForm');
+
+  setupParticipantToggle('#gastoParticipantesGridEdit');
+
+  if (editForm) {
+    editForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      closeModal();
+      showToast('Gasto editado correctamente');
+    });
+  }
+}
+
+
+
+
 export function openModal() {
   document.getElementById('editModal').classList.remove('hidden');
 }
@@ -233,26 +239,7 @@ export function deleteGasto(event) {
   alert('Eliminar gasto'); // (opcional: luego agregar confirmación)
 }
 
-// INICIALIZADOR DEL MODAL
-export function initializeEditModalHandlers() {
-  // Seleccionar/Deseleccionar participantes dentro del modal
-  document.querySelectorAll('.participant-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      btn.classList.toggle('bg-primary-light');
-      btn.classList.toggle('bg-white');
-    });
-  });
 
-  // Capturar submit del formulario de edición
-  const editForm = document.getElementById('editForm');
-  if (editForm) {
-    editForm.addEventListener('submit', function(event) {
-      event.preventDefault();
-      closeModal();
-      showToast('Gasto editado correctamente');
-    });
-  }
-}
 
 // Exponer para el HTML
 window.toggleAccordion = toggleAccordion;

@@ -56,38 +56,64 @@ export function mostrarPasoCorrecto() {
   }
 }
 
-// Avanzar al siguiente paso
-export function pasoSiguiente() {
-  if (pasoActual === 1) {
-    const barra = document.querySelector('#conector-1-2 .barra-interna');
-    if (barra) {
-      barra.style.width = '100%';
 
-      barra.addEventListener('transitionend', function onTransitionEnd(e) {
-        if (e.propertyName === 'width') {
-          barra.removeEventListener('transitionend', onTransitionEnd);
-          pasoActual = 2;
-          actualizarVisualPasos();
-          mostrarPasoCorrecto();
-        }
-      }, { once: true });
-    }
-  } else if (pasoActual === 2) {
-    const barra = document.querySelector('#conector-2-3 .barra-interna');
-    if (barra) {
-      barra.style.width = '100%';
+function smoothScrollToTop(callback) {
+  if (window.scrollY === 0) {
+    // Ya estamos arriba
+    callback();
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      barra.addEventListener('transitionend', function onTransitionEnd(e) {
-        if (e.propertyName === 'width') {
-          barra.removeEventListener('transitionend', onTransitionEnd);
-          pasoActual = 3;
-          actualizarVisualPasos();
-          mostrarPasoCorrecto();
-        }
-      }, { once: true });
-    }
+    const checkIfScrolledToTop = () => {
+      if (window.scrollY === 0) {
+        window.removeEventListener('scroll', checkIfScrolledToTop);
+        callback();
+      }
+    };
+
+    window.addEventListener('scroll', checkIfScrolledToTop);
   }
 }
+
+// Avanzar al siguiente paso
+export function pasoSiguiente() {
+  // Primero hacemos scroll hasta arriba
+  smoothScrollToTop(() => {
+    // 🔥 Solo después de llegar arriba se ejecuta esto
+
+    if (pasoActual === 1) {
+      const barra = document.querySelector('#conector-1-2 .barra-interna');
+      if (barra) {
+        barra.style.width = '100%';
+
+        barra.addEventListener('transitionend', function onTransitionEnd(e) {
+          if (e.propertyName === 'width') {
+            barra.removeEventListener('transitionend', onTransitionEnd);
+            pasoActual = 2;
+            actualizarVisualPasos();
+            mostrarPasoCorrecto();
+          }
+        }, { once: true });
+      }
+    } else if (pasoActual === 2) {
+      const barra = document.querySelector('#conector-2-3 .barra-interna');
+      if (barra) {
+        barra.style.width = '100%';
+
+        barra.addEventListener('transitionend', function onTransitionEnd(e) {
+          if (e.propertyName === 'width') {
+            barra.removeEventListener('transitionend', onTransitionEnd);
+            pasoActual = 3;
+            actualizarVisualPasos();
+            mostrarPasoCorrecto();
+          }
+        }, { once: true });
+      }
+    }
+
+  });
+}
+
 
 
 
@@ -116,4 +142,15 @@ export function initializeWizardNavigation() {
   actualizarVisualPasos();
   mostrarPasoCorrecto();
 }
+
+export function setParticipantButtonState(button, isSelected) {
+  button.classList.toggle('bg-secondary', isSelected);
+  button.classList.toggle('bg-white', !isSelected);
+  button.classList.toggle('text-white', isSelected);
+  button.classList.toggle('text-primary-dark', !isSelected);
+  button.classList.toggle('border-primary-dark', true);
+  button.classList.toggle('hover:bg-primary-light', !isSelected);
+}
+
+
 

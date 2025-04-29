@@ -871,6 +871,10 @@ video {
   align-items: center;
 }
 
+.items-stretch {
+  align-items: stretch;
+}
+
 .justify-start {
   justify-content: flex-start;
 }
@@ -1471,6 +1475,10 @@ video {
 @media (min-width: 640px) {
   .sm\:w-144 {
     width: 36rem;
+  }
+
+  .sm\:flex-row {
+    flex-direction: row;
   }
 }
 
