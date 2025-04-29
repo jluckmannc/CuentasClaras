@@ -1,6 +1,6 @@
 // domHandlers.js
 import { setParticipantButtonState, pasoSiguiente } from './utils.js';
-import { participantsList } from './stateManager.js';
+import { participantsList, gastosList} from './stateManager.js';
 
 // Inicializador del Paso 1 (Participantes)
 export function initializeDOMHandlers() {
@@ -244,6 +244,15 @@ export function initializeGastosHandlers() {
     const newCard = crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados);
     gastosContainer.appendChild(newCard);
 
+    // 🔵 Guardar el gasto en la lista interna
+    gastosList.push({
+      expense_name: nombreGasto,
+      expense_amount: parseInt(monto),
+      payer: pagador,
+      participants: participantesSeleccionados
+    });
+    console.log(gastosList);
+    
     limpiarFormularioGasto();
   });
 }
