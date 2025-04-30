@@ -154,3 +154,11 @@ export function setParticipantButtonState(button, isSelected) {
 
 
 
+export function showToast(message) {
+  const toast = document.getElementById('toastSuccess');
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 2000);
+}

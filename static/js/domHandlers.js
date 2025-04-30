@@ -1,5 +1,5 @@
 // domHandlers.js
-import { setParticipantButtonState, pasoSiguiente } from './utils.js';
+import { setParticipantButtonState, pasoSiguiente, showToast } from './utils.js';
 import { participantsList, gastosList} from './stateManager.js';
 
 // Inicializador del Paso 1 (Participantes)
@@ -148,20 +148,21 @@ function cargarBotonesParticipantes() {
 }
 
 // 🔹 Función para crear una tarjeta de gasto
-function crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados) {
+function crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados, index) {
   const card = document.createElement('div');
-  card.className = 'p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-6 relative cursor-pointer overflow-hidden flex flex-col gap-2';
+  card.className = 'gasto-card p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-2 relative cursor-pointer overflow-hidden flex flex-col gap-2';
+  card.setAttribute('data-id', gastosList.length);
   card.setAttribute('onclick', 'toggleAccordion(event)');
 
   const headerDiv = document.createElement('div');
   headerDiv.className = 'flex justify-between items-start';
 
   const title = document.createElement('h3');
-  title.className = 'text-primary-dark font-bold text-base';
+  title.className = 'gasto-title text-primary-dark font-bold text-base';
   title.textContent = nombreGasto;
 
   const amount = document.createElement('p');
-  amount.className = 'text-primary-dark font-bold text-base';
+  amount.className = 'gasto-monto text-primary-dark font-bold text-base';
   amount.textContent = `$${parseInt(monto).toLocaleString('es-CL')}`;
 
   headerDiv.appendChild(title);
@@ -169,10 +170,11 @@ function crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados)
 
   const accordionDiv = document.createElement('div');
   accordionDiv.id = 'accordionContent';
-  accordionDiv.className = 'transition-all ease-linear duration-300 overflow-hidden max-h-0';
+  accordionDiv.className = 'accordion-content transition-all ease-linear duration-300 overflow-hidden max-h-0';
+
 
   const participantsText = document.createElement('p');
-  participantsText.className = 'text-neutral-mid text-xs mt-1';
+  participantsText.className = 'gasto-participantes text-neutral-mid text-xs mt-1';
   participantsText.textContent = `Participaron ${participantesSeleccionados.join(', ')}`;
 
   accordionDiv.appendChild(participantsText);
@@ -181,7 +183,7 @@ function crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados)
   footerDiv.className = 'flex justify-between items-center mt-2';
 
   const payerInfo = document.createElement('p');
-  payerInfo.className = 'text-neutral-mid text-xs';
+  payerInfo.className = 'gasto-pagador text-neutral-mid text-xs';
   payerInfo.innerHTML = `Pagó <strong>${pagador}</strong>`;
 
   const buttonsDiv = document.createElement('div');
@@ -241,7 +243,8 @@ export function initializeGastosHandlers() {
       return;
     }
 
-    const newCard = crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados);
+    const index = gastosList.length;
+    const newCard = crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados, index);
     gastosContainer.appendChild(newCard);
 
     // 🔵 Guardar el gasto en la lista interna
@@ -258,62 +261,128 @@ export function initializeGastosHandlers() {
 }
 
 
-// MODAL CONTROL
-export function initializeEditModalHandlers() {
-  const editForm = document.getElementById('editForm');
+function llenarSelectPagadores(selectElementId) {
+  const select = document.getElementById(selectElementId);
+  if (!select) return;
 
-  setupParticipantToggle('#gastoParticipantesGridEdit');
+  // Limpiar opciones previas
+  select.innerHTML = '<option disabled selected>Selecciona</option>';
 
-  if (editForm) {
-    editForm.addEventListener('submit', function(event) {
-      event.preventDefault();
-      closeModal();
-      showToast('Gasto editado correctamente');
-    });
-  }
+  // Agregar nuevas opciones
+  participantsList.forEach(participant => {
+    const option = document.createElement('option');
+    option.value = participant.nombre;
+    option.textContent = participant.nombre;
+    select.appendChild(option);
+  });
 }
 
+export function openModal(index) {
+  const gasto = gastosList[index];
+  if (!gasto) return;
 
+  document.getElementById('gastoNombreEdit').value = gasto.expense_name;
+  document.getElementById('gastoMontoEdit').value = gasto.expense_amount;
+  llenarSelectPagadores('gastoPagadorEdit');
+  document.getElementById('gastoPagadorEdit').value = gasto.payer;
 
+  const grid = document.getElementById('gastoParticipantesGridEdit');
+  grid.innerHTML = '';
 
-export function openModal() {
+  participantsList.forEach(p => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'participant-btn px-3 py-1 rounded-full border text-xs border-primary-dark transition-all duration-300';
+    btn.textContent = p.nombre;
+
+    if (gasto.participants.includes(p.nombre)) {
+      btn.classList.add('bg-secondary', 'text-white');
+    } else {
+      btn.classList.add('bg-white', 'text-primary-dark', 'hover:bg-primary-light');
+    }
+
+    btn.addEventListener('click', () => {
+      const isSelected = btn.classList.contains('bg-secondary');
+      btn.classList.toggle('bg-secondary', !isSelected);
+      btn.classList.toggle('text-white', !isSelected);
+      btn.classList.toggle('bg-white', isSelected);
+      btn.classList.toggle('text-primary-dark', isSelected);
+      btn.classList.toggle('hover:bg-primary-light', isSelected);
+    });
+
+    grid.appendChild(btn);
+  });
+
+  // Guardar el índice temporalmente
+  document.getElementById('editForm').dataset.index = index;
   document.getElementById('editModal').classList.remove('hidden');
 }
+
+export function initializeEditModalHandlers() {
+  const editForm = document.getElementById('editForm');
+  if (!editForm) return;
+
+  editForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    const index = parseInt(editForm.dataset.index);
+    const nombre = document.getElementById('gastoNombreEdit').value.trim();
+    const monto = parseInt(document.getElementById('gastoMontoEdit').value.trim());
+    const pagador = document.getElementById('gastoPagadorEdit').value;
+    const participantes = Array.from(document.querySelectorAll('#gastoParticipantesGridEdit .participant-btn.bg-secondary'))
+      .map(btn => btn.textContent);
+
+    // Validación rápida
+    if (!nombre || !monto || !pagador || participantes.length === 0) {
+      alert("Completa todos los campos");
+      return;
+    }
+
+    // Actualizar datos en la lista
+    gastosList[index] = {
+      expense_name: nombre,
+      expense_amount: monto,
+      payer: pagador,
+      participants: participantes
+    };
+
+    // Actualizar visual en la tarjeta
+    const card = document.querySelector(`.gasto-card[data-id="${index}"]`);
+    if (card) {
+      card.querySelector('.gasto-title').textContent = nombre;
+      card.querySelector('.gasto-monto').textContent = `$${monto.toLocaleString('es-CL')}`;
+      card.querySelector('.gasto-participantes').textContent = `Participaron ${participantes.join(', ')}`;
+      card.querySelector('.gasto-pagador').innerHTML = `Pagó <strong>${pagador}</strong>`;
+    }
+
+    closeModal();
+    showToast("Gasto actualizado");
+  });
+}
+
 
 export function closeModal() {
   document.getElementById('editModal').classList.add('hidden');
 }
 
-export function showToast(message) {
-  const toast = document.getElementById('toastSuccess');
-  toast.textContent = message;
-  toast.classList.remove('hidden');
-  setTimeout(() => {
-    toast.classList.add('hidden');
-  }, 2000);
-}
 
 // ACORDEÓN PARTICIPANTES
 export function toggleAccordion(event) {
-  if (event.target.tagName.toLowerCase() === 'button') {
-    return;
-  }
+  if (event.target.tagName.toLowerCase() === 'button') return;
 
-  const content = document.getElementById('accordionContent');
+  const card = event.currentTarget;
+  const content = card.querySelector('.accordion-content');
+  if (!content) return;
 
-  if (content.classList.contains('max-h-0')) {
-    content.classList.remove('max-h-0');
-    content.classList.add('max-h-96'); // Puedes ajustar el máximo
-  } else {
-    content.classList.add('max-h-0');
-    content.classList.remove('max-h-96');
-  }
+  content.classList.toggle('max-h-0');
+  content.classList.toggle('max-h-96');
 }
 
-// BOTÓN EDITAR
+// Para el botón "Editar" de cada tarjeta
 export function editGasto(event) {
   event.stopPropagation();
-  openModal();
+  const card = event.target.closest('.gasto-card');
+  const index = card?.dataset?.id;
+  if (index !== undefined) openModal(parseInt(index));
 }
 
 // BOTÓN ELIMINAR
