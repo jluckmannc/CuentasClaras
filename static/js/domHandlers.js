@@ -133,7 +133,7 @@ export function setupParticipantToggle(buttonGroupSelector, toggleButtonSelector
 // 🔹 Función para llenar el select de pagadores
 function cargarPagadores() {
   const pagadorSelect = document.getElementById('gasto-pagador-select');
-  pagadorSelect.innerHTML = '<option selected disabled>Quién pagó</option>';
+  pagadorSelect.innerHTML = '<option value="" selected disabled hidden>¿Quién pagó?</option>';
 
   participantsList.forEach(participant => {
     const option = document.createElement('option');
@@ -235,43 +235,54 @@ function limpiarFormularioGasto() {
   });
 }
 
+function handleAddGasto() {
+  const nombreGasto = document.getElementById('gasto-nombre-input').value.trim();
+  const monto = document.getElementById('gasto-monto-input').value.trim();
+
+  const pagadorSelect = document.getElementById('gasto-pagador-select');
+  const pagador = pagadorSelect.value;
+
+  const participantesSeleccionados = Array.from(
+    document.querySelectorAll('.participant-btn.bg-secondary')
+  ).map(btn => btn.textContent.trim());
+
+  if (!nombreGasto || !monto || pagador === "" || pagadorSelect.selectedIndex === 0 || participantesSeleccionados.length === 0) {
+    showGastoError();
+    return;
+  }
+
+  const index = gastosList.length;
+  const newCard = crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados, index);
+  document.getElementById('gastos-container').appendChild(newCard);
+
+  gastosList.push({
+    expense_name: nombreGasto,
+    expense_amount: parseInt(monto),
+    payer: pagador,
+    participants: participantesSeleccionados
+  });
+
+  if (gastosList.length === 1) {
+    document.getElementById('go-to-step-3').classList.remove('hidden');
+  }
+
+  limpiarFormularioGasto();
+}
+
+
 // 🔹 Función principal de inicialización
 export function initializeGastosHandlers() {
-  console.log(participantsList);
   
   const gastosContainer = document.getElementById('gastos-container');
   const addGastoButton = document.getElementById('add-gasto');
-
+  
   cargarPagadores();
   cargarBotonesParticipantes();
 
-  addGastoButton.addEventListener('click', () => {
-    const nombreGasto = document.getElementById('gasto-nombre-input').value.trim();
-    const monto = document.getElementById('gasto-monto-input').value.trim();
-    const pagador = document.getElementById('gasto-pagador-select').value;
-    const participantesSeleccionados = Array.from(document.querySelectorAll('.participant-btn.bg-secondary')).map(btn => btn.textContent.trim());
-
-    if (!nombreGasto || !monto || !pagador || participantesSeleccionados.length === 0) {
-      showGastoError();
-      return;
-    }
-
-    const index = gastosList.length;
-    const newCard = crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados, index);
-    gastosContainer.appendChild(newCard);
-
-    // 🔵 Guardar el gasto en la lista interna
-    gastosList.push({
-      expense_name: nombreGasto,
-      expense_amount: parseInt(monto),
-      payer: pagador,
-      participants: participantesSeleccionados
-    });
-    if (gastosList.length === 1) {
-      document.getElementById('go-to-step-3').classList.remove('hidden');
-    }
-    limpiarFormularioGasto();
-  });
+  if (!addGastoButton.dataset.listenerAttached) {
+    addGastoButton.addEventListener('click', handleAddGasto);
+    addGastoButton.dataset.listenerAttached = 'true';
+  }
 }
 
 

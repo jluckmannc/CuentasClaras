@@ -56,8 +56,6 @@ export function mostrarPasoCorrecto() {
     paso1.classList.add('hidden');
     paso2.classList.remove('hidden');
     paso3.classList.add('hidden');
-    
-    // 👇 Asegura que handlers se inicialicen justo al entrar a paso 2
     initializeGastosHandlers();
   } else if (pasoActual === 3) {
     paso1.classList.add('hidden');
