@@ -1,6 +1,16 @@
 // domHandlers.js
-import { setParticipantButtonState, pasoSiguiente, showToast } from './utils.js';
-import { participantsList, gastosList} from './stateManager.js';
+import { 
+  setParticipantButtonState, 
+  pasoActual ,
+  pasoSiguiente, 
+  showToast, setPasoActual, 
+  actualizarVisualPasos, 
+  mostrarPasoCorrecto } 
+  from './utils.js';
+import { 
+  participantsList, 
+  gastosList} 
+  from './stateManager.js';
 
 // Inicializador del Paso 1 (Participantes)
 export function initializeDOMHandlers() {
@@ -83,6 +93,16 @@ export function initializeDOMHandlers() {
   continuarButton.addEventListener('click', () => {
     pasoSiguiente();  // Lógica centralizada en utils.js
   });
+
+
+  const volverGastosBtn = document.getElementById('volver-gastos');
+  if (volverGastosBtn) {
+    volverGastosBtn.addEventListener('click', () => {
+      setPasoActual(2);
+      actualizarVisualPasos();
+      mostrarPasoCorrecto();
+    });
+  }
 }
 
 // Inicializador del Paso 2 (Gastos)

@@ -5,8 +5,10 @@ import { enviarDatosAGestionar, renderResultados } from './resultRenderer.js';
 
 // Estado de la navegación
 export let pasoActual = 1;
-// ✅ Datos de prueba SOLO si se accede directo a #paso3
 
+export function setPasoActual(valor) {
+  pasoActual = valor;
+}
 
 // Funciones atómicas para pintar/deseleccionar conectores
 function pintarConector(index) {
