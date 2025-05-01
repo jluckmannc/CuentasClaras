@@ -46,14 +46,15 @@ export function actualizarVisualPasos() {
 export function mostrarPasoCorrecto() {
   const paso1 = document.getElementById('step-participants');
   const paso2 = document.getElementById('step-gastos');
+  const paso3 = document.getElementById('step-resultados');
 
-  if (pasoActual === 1) {
-    paso1.classList.remove('hidden');
-    paso2.classList.add('hidden');
-  } else if (pasoActual === 2) {
-    paso1.classList.add('hidden');
-    paso2.classList.remove('hidden');
-  }
+  if (paso1) paso1.classList.add('hidden');
+  if (paso2) paso2.classList.add('hidden');
+  if (paso3) paso3.classList.add('hidden');
+
+  if (pasoActual === 1 && paso1) paso1.classList.remove('hidden');
+  if (pasoActual === 2 && paso2) paso2.classList.remove('hidden');
+  if (pasoActual === 3 && paso3) paso3.classList.remove('hidden');
 }
 
 
@@ -130,7 +131,6 @@ export function initializeWizardNavigation() {
     pasoActual = 1;
   }
 
-
   if (botonPaso1) {
     botonPaso1.addEventListener('click', pasoSiguiente);
   }
@@ -140,7 +140,7 @@ export function initializeWizardNavigation() {
   }
 
   actualizarVisualPasos();
-  mostrarPasoCorrecto();
+  mostrarPasoCorrecto(); // Esto activa la vista correspondiente
 }
 
 export function setParticipantButtonState(button, isSelected) {

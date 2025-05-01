@@ -425,7 +425,18 @@ export function confirmDeleteGasto() {
 }
 
 
+export function confirmReset() {
+  // Reinicia todo el flujo
+  location.href = "/organizar-gastos"; // O cambia por tu ruta inicial
+}
 
+export function closeResetModal() {
+  document.getElementById("resetModal").classList.add("hidden");
+}
+
+export function openResetModal() {
+  document.getElementById("resetModal").classList.remove("hidden");
+}
 
 
 // Exponer para el HTML
@@ -436,3 +447,6 @@ window.openModal = openModal;
 window.closeModal = closeModal;
 window.closeDeleteModal = closeDeleteModal;
 window.confirmDeleteGasto = confirmDeleteGasto;
+window.openResetModal = openResetModal;
+window.closeResetModal = closeResetModal;
+window.confirmReset = confirmReset;
