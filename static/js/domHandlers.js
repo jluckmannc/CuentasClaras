@@ -160,7 +160,7 @@ function cargarBotonesParticipantes() {
 }
 
 // 🔹 Función para crear una tarjeta de gasto
-function crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados, index) {
+export function crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados, index) {
   const card = document.createElement('div');
   card.className = 'gasto-card p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-2 relative cursor-pointer overflow-hidden flex flex-col gap-2';
   card.setAttribute('data-id', gastosList.length);
@@ -483,3 +483,4 @@ window.confirmDeleteGasto = confirmDeleteGasto;
 window.openResetModal = openResetModal;
 window.closeResetModal = closeResetModal;
 window.confirmReset = confirmReset;
+

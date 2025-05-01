@@ -1,7 +1,10 @@
 // utils.js
-import { initializeGastosHandlers } from './domHandlers.js';
+import { initializeGastosHandlers, crearGastoCard } from './domHandlers.js';
+import { gastosList } from './stateManager.js';
 // Estado de la navegación
 export let pasoActual = 1;
+// ✅ Datos de prueba SOLO si se accede directo a #paso3
+
 
 // Funciones atómicas para pintar/deseleccionar conectores
 function pintarConector(index) {
@@ -122,22 +125,35 @@ export function pasoSiguiente() {
   });
 }
 
-
-
-
 export function initializeWizardNavigation() {
   const botonPaso1 = document.getElementById('go-to-step-2');
   const botonPaso2 = document.getElementById('go-to-step-3');
 
   // Detectar el hash en la URL al cargar
-  if (pasoActual === 2) {
-    // Reasignar IDs únicos por seguridad antes de usar la lista
-    participantsList.forEach((p, i) => {
-      if (!p.id) p.id = Date.now() + i;
-    });
-  
-    cargarPagadores();
-    cargarBotonesParticipantes();
+  if (window.location.hash === '#paso2') {
+    pasoActual = 2;
+
+    // Cargar visual
+    initializeGastosHandlers();
+
+    if (gastosList.length > 0) {
+      const gastosContainer = document.getElementById('gastos-container');
+      gastosContainer.innerHTML = ''; // limpiar por si acaso
+    
+      gastosList.forEach((gasto, index) => {
+        const card = crearGastoCard(
+          gasto.expense_name,
+          gasto.expense_amount,
+          gasto.payer,
+          gasto.participants,
+          index
+        );
+        gastosContainer.appendChild(card);
+      });
+    
+      // Mostrar botón continuar
+      document.getElementById('go-to-step-3')?.classList.remove('hidden');
+    }
 
   } else if (window.location.hash === '#paso3') {
     pasoActual = 3;
@@ -154,9 +170,7 @@ export function initializeWizardNavigation() {
   }
 
   actualizarVisualPasos();
-  mostrarPasoCorrecto(); // Esto activa la vista correspondiente
-
-  
+  mostrarPasoCorrecto();
 }
 
 export function setParticipantButtonState(button, isSelected) {
