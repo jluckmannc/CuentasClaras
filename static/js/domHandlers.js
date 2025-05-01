@@ -59,7 +59,11 @@ export function initializeDOMHandlers() {
       return;
     }
 
-    participantsList.push(name);
+    participantsList.push({
+      id: Date.now(),
+      nombre: name
+    });
+    
     const newChip = createFriendChip(name);
     friendsListContainer.appendChild(newChip);
 
@@ -129,6 +133,7 @@ export function setupParticipantToggle(buttonGroupSelector, toggleButtonSelector
 // 🔹 Función para llenar el select de pagadores
 function cargarPagadores() {
   const pagadorSelect = document.getElementById('gasto-pagador-select');
+  pagadorSelect.innerHTML = '<option selected disabled>Quién pagó</option>';
 
   participantsList.forEach(participant => {
     const option = document.createElement('option');
@@ -141,6 +146,7 @@ function cargarPagadores() {
 // 🔹 Función para crear los botones de participantes
 function cargarBotonesParticipantes() {
   const participantesGrid = document.getElementById('gasto-participantes-grid');
+  participantesGrid.innerHTML = ''; // limpiar primero
 
   participantsList.forEach(participant => {
     const button = document.createElement('button');
@@ -150,7 +156,6 @@ function cargarBotonesParticipantes() {
     participantesGrid.appendChild(button);
   });
 
-  // ⚡ Una vez creados los botones, inicializar selección
   setupParticipantToggle('#gasto-participantes-grid', '#toggle-all', '#toggle-icon');
 }
 
@@ -232,6 +237,8 @@ function limpiarFormularioGasto() {
 
 // 🔹 Función principal de inicialización
 export function initializeGastosHandlers() {
+  console.log(participantsList);
+  
   const gastosContainer = document.getElementById('gastos-container');
   const addGastoButton = document.getElementById('add-gasto');
 

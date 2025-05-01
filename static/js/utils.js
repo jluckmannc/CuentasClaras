@@ -1,5 +1,5 @@
 // utils.js
-
+import { initializeGastosHandlers } from './domHandlers.js';
 // Estado de la navegación
 export let pasoActual = 1;
 
@@ -48,13 +48,22 @@ export function mostrarPasoCorrecto() {
   const paso2 = document.getElementById('step-gastos');
   const paso3 = document.getElementById('step-resultados');
 
-  if (paso1) paso1.classList.add('hidden');
-  if (paso2) paso2.classList.add('hidden');
-  if (paso3) paso3.classList.add('hidden');
-
-  if (pasoActual === 1 && paso1) paso1.classList.remove('hidden');
-  if (pasoActual === 2 && paso2) paso2.classList.remove('hidden');
-  if (pasoActual === 3 && paso3) paso3.classList.remove('hidden');
+  if (pasoActual === 1) {
+    paso1.classList.remove('hidden');
+    paso2.classList.add('hidden');
+    paso3.classList.add('hidden');
+  } else if (pasoActual === 2) {
+    paso1.classList.add('hidden');
+    paso2.classList.remove('hidden');
+    paso3.classList.add('hidden');
+    
+    // 👇 Asegura que handlers se inicialicen justo al entrar a paso 2
+    initializeGastosHandlers();
+  } else if (pasoActual === 3) {
+    paso1.classList.add('hidden');
+    paso2.classList.add('hidden');
+    paso3.classList.remove('hidden');
+  }
 }
 
 
@@ -123,8 +132,15 @@ export function initializeWizardNavigation() {
   const botonPaso2 = document.getElementById('go-to-step-3');
 
   // Detectar el hash en la URL al cargar
-  if (window.location.hash === '#paso2') {
-    pasoActual = 2;
+  if (pasoActual === 2) {
+    // Reasignar IDs únicos por seguridad antes de usar la lista
+    participantsList.forEach((p, i) => {
+      if (!p.id) p.id = Date.now() + i;
+    });
+  
+    cargarPagadores();
+    cargarBotonesParticipantes();
+
   } else if (window.location.hash === '#paso3') {
     pasoActual = 3;
   } else {
@@ -141,6 +157,8 @@ export function initializeWizardNavigation() {
 
   actualizarVisualPasos();
   mostrarPasoCorrecto(); // Esto activa la vista correspondiente
+
+  
 }
 
 export function setParticipantButtonState(button, isSelected) {
