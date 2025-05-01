@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import home, input_data, procesar_gastos
-from .develop import add_friends, add_expense, wizard
+from .views import home, input_data, procesar_gastos, wizard
+from .develop import add_friends, add_expense
 
 urlpatterns = [
     path('', home, name='home'),

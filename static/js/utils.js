@@ -1,6 +1,8 @@
 // utils.js
 import { initializeGastosHandlers, crearGastoCard } from './domHandlers.js';
 import { gastosList } from './stateManager.js';
+import { enviarDatosAGestionar, renderResultados } from './resultRenderer.js';
+
 // Estado de la navegación
 export let pasoActual = 1;
 // ✅ Datos de prueba SOLO si se accede directo a #paso3
@@ -61,6 +63,12 @@ export function mostrarPasoCorrecto() {
     paso3.classList.add('hidden');
     initializeGastosHandlers();
   } else if (pasoActual === 3) {
+    enviarDatosAGestionar().then(res => {
+      // if (res?.resumen) {
+        
+        renderResultados(res.resumen);
+      // }
+    });
     paso1.classList.add('hidden');
     paso2.classList.add('hidden');
     paso3.classList.remove('hidden');
