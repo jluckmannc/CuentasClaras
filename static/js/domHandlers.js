@@ -28,7 +28,6 @@ export function initializeDOMHandlers() {
         participantsList.splice(index, 1);
       }
       chip.remove();
-      console.log('Participantes actuales:', participantsList);
     });
 
     chip.appendChild(span);
@@ -66,7 +65,6 @@ export function initializeDOMHandlers() {
 
     inputField.value = '';
     inputField.focus();
-    console.log('Participantes actuales:', participantsList);
   }
 
   // Listeners
@@ -98,7 +96,6 @@ export function setupParticipantToggle(buttonGroupSelector, toggleButtonSelector
 
   participantButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      console.log('click');
       
       const isSelected = btn.classList.contains('bg-secondary');
       setParticipantButtonState(btn, !isSelected);
@@ -169,7 +166,6 @@ function crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados,
   headerDiv.appendChild(amount);
 
   const accordionDiv = document.createElement('div');
-  accordionDiv.id = 'accordionContent';
   accordionDiv.className = 'accordion-content transition-all ease-linear duration-300 overflow-hidden max-h-0';
 
 
@@ -254,7 +250,6 @@ export function initializeGastosHandlers() {
       payer: pagador,
       participants: participantesSeleccionados
     });
-    console.log(gastosList);
     
     limpiarFormularioGasto();
   });
@@ -385,11 +380,51 @@ export function editGasto(event) {
   if (index !== undefined) openModal(parseInt(index));
 }
 
-// BOTÓN ELIMINAR
+
+let gastoAEliminarIndex = null;
+
 export function deleteGasto(event) {
   event.stopPropagation();
-  alert('Eliminar gasto'); // (opcional: luego agregar confirmación)
+  const card = event.target.closest('.gasto-card');
+  const index = parseInt(card?.dataset?.id);
+  const gasto = gastosList[index];
+
+  if (!gasto) return;
+
+  gastoAEliminarIndex = index;
+
+  document.getElementById('deleteModalText').textContent =
+    `¿Estás seguro de que deseas eliminar el gasto "${gasto.expense_name}"?`;
+
+  document.getElementById('deleteModal').classList.remove('hidden');
 }
+
+export function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.add('hidden');
+  gastoAEliminarIndex = null;
+  
+}
+
+export function confirmDeleteGasto() {
+  if (gastoAEliminarIndex === null) return;
+
+  // 1. Eliminar del array
+  gastosList.splice(gastoAEliminarIndex, 1);
+
+  // 2. Eliminar visualmente la tarjeta
+  const card = document.querySelector(`.gasto-card[data-id="${gastoAEliminarIndex}"]`);
+  if (card) card.remove();
+
+  // 3. Re-indexar visualmente el resto
+  document.querySelectorAll('.gasto-card').forEach((card, i) => {
+    card.dataset.id = i;
+  });
+
+  closeDeleteModal();
+  showToast('Gasto eliminado correctamente');
+}
+
+
 
 
 
@@ -399,3 +434,5 @@ window.editGasto = editGasto;
 window.deleteGasto = deleteGasto;
 window.openModal = openModal;
 window.closeModal = closeModal;
+window.closeDeleteModal = closeDeleteModal;
+window.confirmDeleteGasto = confirmDeleteGasto;

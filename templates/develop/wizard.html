@@ -164,7 +164,9 @@
 <!-- (este ya lo tienes, solo agregamos la función correcta abajo) -->
 
 <!-- Modal de Editar Gasto -->
-<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 transition-opacity duration-300 ease-in-out">
+  <div class="modal-content bg-white rounded-2xl shadow-lg p-8 w-[90%] max-w-md transform scale-95 opacity-0 transition-all duration-300 ease-in-out">
+  </div>
   <div class="bg-white rounded-2xl shadow-lg p-8 w-[90%] max-w-md relative">
 
     <!-- Título -->
@@ -209,6 +211,18 @@
       </div>
 
     </form>
+  </div>
+</div>
+
+<!-- Modal Confirmación de Eliminación -->
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-2xl shadow-lg p-8 w-[90%] max-w-md">
+    <h3 class="text-primary-dark font-bold text-lg mb-4">¿Estás seguro?</h3>
+    <p id="deleteModalText" class="text-sm text-neutral-mid mb-6">¿Deseas eliminar este gasto?</p>
+    <div class="flex justify-end gap-2">
+      <button onclick="closeDeleteModal()" class="px-4 py-2 rounded-full text-xs bg-neutral-light hover:bg-neutral-mid text-primary-dark transition-all">Cancelar</button>
+      <button id="confirmDeleteBtn" onclick="confirmDeleteGasto()" class="px-4 py-2 rounded-full text-xs bg-secondary hover:bg-secondary-hover text-white transition-all">Eliminar</button>
+    </div>
   </div>
 </div>
 
