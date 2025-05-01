@@ -83,7 +83,17 @@ export function initializeDOMHandlers() {
 
 // Inicializador del Paso 2 (Gastos)
 
+function showGastoError(message = 'Por favor completa todos los campos y selecciona al menos un participante.') {
+  const errorMessage = document.getElementById('gasto-error-message');
+  errorMessage.textContent = message;
+  errorMessage.classList.remove('opacity-0', 'translate-y-2');
+  errorMessage.classList.add('opacity-100', 'translate-y-0');
 
+  setTimeout(() => {
+    errorMessage.classList.add('opacity-0', 'translate-y-2');
+    errorMessage.classList.remove('opacity-100', 'translate-y-0');
+  }, 3000);
+}
 
 
 
@@ -235,7 +245,7 @@ export function initializeGastosHandlers() {
     const participantesSeleccionados = Array.from(document.querySelectorAll('.participant-btn.bg-secondary')).map(btn => btn.textContent.trim());
 
     if (!nombreGasto || !monto || !pagador || participantesSeleccionados.length === 0) {
-      alert('Por favor completa todos los campos y selecciona al menos un participante.');
+      showGastoError();
       return;
     }
 
@@ -250,7 +260,9 @@ export function initializeGastosHandlers() {
       payer: pagador,
       participants: participantesSeleccionados
     });
-    
+    if (gastosList.length === 1) {
+      document.getElementById('go-to-step-3').classList.remove('hidden');
+    }
     limpiarFormularioGasto();
   });
 }
@@ -414,7 +426,10 @@ export function confirmDeleteGasto() {
   // 2. Eliminar visualmente la tarjeta
   const card = document.querySelector(`.gasto-card[data-id="${gastoAEliminarIndex}"]`);
   if (card) card.remove();
-
+  
+  if (gastosList.length === 0) {
+    document.getElementById('go-to-step-3').classList.add('hidden');
+  }
   // 3. Re-indexar visualmente el resto
   document.querySelectorAll('.gasto-card').forEach((card, i) => {
     card.dataset.id = i;
