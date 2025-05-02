@@ -37,9 +37,23 @@ export function initializeDOMHandlers() {
       const index = participantsList.findIndex(p => p.nombre === name);
       if (index !== -1) {
         participantsList.splice(index, 1);
+    
+        // 🔴 Eliminar gastos donde la persona sea pagador
+        for (let i = gastosList.length - 1; i >= 0; i--) {
+          if (gastosList[i].payer === name) {
+            gastosList.splice(i, 1);
+          }
+        }
+    
+        // 🟡 Eliminarla de gastos donde participó (sin eliminar el gasto completo)
+        gastosList.forEach(gasto => {
+          gasto.participants = gasto.participants.filter(p => p !== name);
+        });
       }
       chip.remove();
       console.log(participantsList);
+      console.log(gastosList);
+      
       
     });
 
@@ -261,6 +275,13 @@ function limpiarFormularioGasto() {
     btn.classList.remove('bg-secondary', 'text-white');
     btn.classList.add('bg-white', 'text-primary-dark', 'border-primary-dark', 'hover:bg-primary-light');
   });
+
+  // 🔄 Restaurar ícono del botón "Seleccionar todos"
+  const toggleIcon = document.querySelector('#toggle-icon');
+  const toggleBtn = document.querySelector('#toggle-all');
+  if (toggleIcon && toggleBtn) {
+    toggleIcon.src = toggleBtn.dataset.checkSrc;
+  }
 }
 
 function handleAddGasto() {
@@ -301,7 +322,6 @@ function handleAddGasto() {
 // 🔹 Función principal de inicialización
 export function initializeGastosHandlers() {
   
-  const gastosContainer = document.getElementById('gastos-container');
   const addGastoButton = document.getElementById('add-gasto');
   
   cargarPagadores();

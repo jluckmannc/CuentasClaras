@@ -31,6 +31,29 @@ export function renderizarSeccionActual() {
     paso2.classList.remove('hidden');
     paso3.classList.add('hidden');
     initializeGastosHandlers();
+    // 🧼 Limpiar contenedor visual
+    const gastosContainer = document.getElementById('gastos-container');
+    gastosContainer.innerHTML = '';
+
+    // 🔁 Volver a renderizar gastos actuales
+    gastosList.forEach((gasto, index) => {
+      const card = crearGastoCard(
+        gasto.expense_name,
+        gasto.expense_amount,
+        gasto.payer,
+        gasto.participants,
+        index
+      );
+      gastosContainer.appendChild(card);
+    });
+
+    // 👁️ Ocultar botón continuar si ya no hay gastos
+    const continuarBtn = document.getElementById('go-to-step-3');
+    if (gastosList.length === 0) {
+      continuarBtn.classList.add('hidden');
+    } else {
+      continuarBtn.classList.remove('hidden');
+    }
   } else if (getPasoActual() === 3) {
     enviarDatosAGestionar().then(res => {
       // if (res?.resumen) {
@@ -139,7 +162,6 @@ export function initializeWizardNavigation() {
   });
 
   botonPaso2.addEventListener('click', () => {
-    console.log("botonPase2");
     
     pasoSiguiente();
     activarWizardPaso(3);
@@ -148,17 +170,15 @@ export function initializeWizardNavigation() {
 }
 
 export function activarWizardPaso(paso) {
-  console.log("activarWizardPaso", paso);
   
   const circulo = document.getElementById(`wizard-${paso}`);
   const step = circulo?.parentElement;
   const texto = step?.querySelector('p');
-  
+
   if (!circulo || !texto) return;
 
   circulo.className = 'w-6 h-6 rounded-full bg-primary-dark flex items-center justify-center text-white text-sm';
   texto.className = 'mt-2 text-xs md:text-sm font-body text-primary-dark';
-  console.log(circulo);
   
 }
 
