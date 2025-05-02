@@ -64,24 +64,39 @@ function smoothScrollToTop(callback) {
 }
 
 
-export function pasoSiguiente() {
+export function cambiarPaso(nuevoPaso) {
+  const pasoActual = getPasoActual();
+  const direccion = nuevoPaso > pasoActual ? 'avanzar' : 'retroceder';
+  
+  const conectorId = `#conector-${Math.min(pasoActual, nuevoPaso)}-${Math.max(pasoActual, nuevoPaso)} .barra-interna`;
+  const barra = document.querySelector(conectorId);
+
   smoothScrollToTop(() => {
-    const actual = getPasoActual();
-    const barra = document.querySelector(`#conector-${actual}-${actual + 1} .barra-interna`);
-    console.log(barra);
-    
     if (barra) {
-      barra.style.width = '100%';
+      // Si vamos hacia atrás, reducir la barra
+      barra.style.width = direccion === 'avanzar' ? '100%' : '0%';
+
       barra.addEventListener('transitionend', function onTransitionEnd(e) {
+        
         if (e.propertyName === 'width') {
+          
           barra.removeEventListener('transitionend', onTransitionEnd);
-          setPasoActual(actual + 1);
+          setPasoActual(nuevoPaso);
         }
       }, { once: true });
     } else {
-      setPasoActual(actual + 1);
+      // Si no hay barra, igual cambiar el paso
+      setPasoActual(nuevoPaso);
     }
   });
+}
+
+export function pasoSiguiente() {
+  cambiarPaso(getPasoActual() + 1);
+}
+
+export function pasoAnterior() {
+  cambiarPaso(getPasoActual() - 1);
 }
 
 

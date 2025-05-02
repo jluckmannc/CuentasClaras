@@ -1,7 +1,9 @@
 // domHandlers.js
 import { 
   setParticipantButtonState, 
-  showToast, setPasoActual, 
+  showToast,
+  setPasoActual,
+  cambiarPaso 
 } 
 from './utils.js';
 import { 
@@ -90,7 +92,8 @@ export function initializeDOMHandlers() {
   const volverGastosBtn = document.getElementById('volver-gastos');
   if (volverGastosBtn) {
     volverGastosBtn.addEventListener('click', () => {
-      setPasoActual(2); // ya hace todo lo demás
+      cambiarPaso(2);
+      setPasoActual(2); 
     });
   }
 }
