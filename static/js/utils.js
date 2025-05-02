@@ -133,16 +133,45 @@ export function initializeWizardNavigation() {
     setPasoActual(1);
   }
 
-  if (botonPaso1) {
-    botonPaso1.addEventListener('click', pasoSiguiente);
-  }
+  botonPaso1.addEventListener('click', () => {
+    pasoSiguiente();
+    activarWizardPaso(2);
+  });
 
-  if (botonPaso2) {
-    botonPaso2.addEventListener('click', pasoSiguiente);
-  }
+  botonPaso2.addEventListener('click', () => {
+    console.log("botonPase2");
+    
+    pasoSiguiente();
+    activarWizardPaso(3);
+  });
+
 }
 
+export function activarWizardPaso(paso) {
+  console.log("activarWizardPaso", paso);
+  
+  const circulo = document.getElementById(`wizard-${paso}`);
+  const step = circulo?.parentElement;
+  const texto = step?.querySelector('p');
+  
+  if (!circulo || !texto) return;
 
+  circulo.className = 'w-6 h-6 rounded-full bg-primary-dark flex items-center justify-center text-white text-sm';
+  texto.className = 'mt-2 text-xs md:text-sm font-body text-primary-dark';
+  console.log(circulo);
+  
+}
+
+export function desactivarWizardPaso(paso) {
+  const circulo = document.getElementById(`wizard-${paso}`);
+  const step = circulo?.parentElement;
+  const texto = step?.querySelector('p');
+
+  if (!circulo || !texto) return;
+
+  circulo.className = 'w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm';
+  texto.className = 'mt-2 text-xs md:text-sm font-body text-neutral-mid';
+}
 
 
 export function setParticipantButtonState(button, isSelected) {

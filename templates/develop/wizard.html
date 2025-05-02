@@ -9,24 +9,30 @@
 
     <!-- Flujo de pasos -->
     <div class="flex items-center justify-center mb-8 md:mb-10 space-x-4 md:space-x-8">
+
       <div class="wizard-step flex flex-col items-center">
-        <div class="w-6 h-6 rounded-full bg-primary-dark flex items-center justify-center text-white text-sm">1</div>
+        <div id="wizard-1" class="w-6 h-6 rounded-full bg-primary-dark flex items-center justify-center text-white text-sm">1</div>
         <p class="mt-2 text-xs md:text-sm font-body text-primary-dark">Participantes</p>
       </div>
+
       <div id="conector-1-2" class="relative wizard-connector overflow-hidden w-10 h-1 bg-neutral-light md:w-16">
         <div class="barra-interna absolute left-0 top-0 h-full bg-primary-dark transition-all duration-500 ease-linear" style="width: 0%;"></div>
       </div>
+
       <div class="wizard-step flex flex-col items-center">
-        <div class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">2</div>
+        <div id="wizard-2"  class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">2</div>
         <p class="mt-2 text-xs md:text-sm font-body text-neutral-mid">Gastos</p>
       </div>
+
       <div id="conector-2-3" class="relative wizard-connector overflow-hidden w-10 h-1 bg-neutral-light md:w-16">
         <div class="barra-interna absolute left-0 top-0 h-full bg-primary-dark transition-all duration-500 ease-linear" style="width: 0%;"></div>
       </div>
+
       <div class="wizard-step flex flex-col items-center">
-        <div class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">3</div>
+        <div id="wizard-3" class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">3</div>
         <p class="mt-2 text-xs md:text-sm font-body text-neutral-mid">Resultado</p>
       </div>
+
     </div>
 
     <!-- Paso 1: Participantes -->

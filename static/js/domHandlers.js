@@ -3,7 +3,9 @@ import {
   setParticipantButtonState, 
   showToast,
   setPasoActual,
-  cambiarPaso 
+  cambiarPaso,
+  activarWizardPaso,
+  desactivarWizardPaso
 } 
 from './utils.js';
 import { 
@@ -89,11 +91,22 @@ export function initializeDOMHandlers() {
   });
 
 
+  const volverParticipantsbtn = document.getElementById('volver-participantes');
+  if (volverParticipantsbtn) {
+    volverParticipantsbtn.addEventListener('click', () => {
+      cambiarPaso(1);
+      setPasoActual(1);
+      desactivarWizardPaso(2);
+      desactivarWizardPaso(3);
+    });
+  }
   const volverGastosBtn = document.getElementById('volver-gastos');
   if (volverGastosBtn) {
     volverGastosBtn.addEventListener('click', () => {
       cambiarPaso(2);
       setPasoActual(2); 
+      activarWizardPaso(2)
+      desactivarWizardPaso(3);
     });
   }
 }
