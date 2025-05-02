@@ -34,11 +34,13 @@ export function initializeDOMHandlers() {
     removeButton.textContent = '×';
 
     removeButton.addEventListener('click', () => {
-      const index = participantsList.indexOf(name);
+      const index = participantsList.findIndex(p => p.nombre === name);
       if (index !== -1) {
         participantsList.splice(index, 1);
       }
       chip.remove();
+      console.log(participantsList);
+      
     });
 
     chip.appendChild(span);
