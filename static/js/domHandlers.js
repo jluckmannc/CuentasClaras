@@ -1,12 +1,9 @@
 // domHandlers.js
 import { 
   setParticipantButtonState, 
-  pasoActual ,
-  pasoSiguiente, 
   showToast, setPasoActual, 
-  actualizarVisualPasos, 
-  mostrarPasoCorrecto } 
-  from './utils.js';
+} 
+from './utils.js';
 import { 
   participantsList, 
   gastosList} 
@@ -89,18 +86,11 @@ export function initializeDOMHandlers() {
     }
   });
 
-  // Listener del botón Continuar
-  continuarButton.addEventListener('click', () => {
-    pasoSiguiente();  // Lógica centralizada en utils.js
-  });
-
 
   const volverGastosBtn = document.getElementById('volver-gastos');
   if (volverGastosBtn) {
     volverGastosBtn.addEventListener('click', () => {
-      setPasoActual(2);
-      actualizarVisualPasos();
-      mostrarPasoCorrecto();
+      setPasoActual(2); // ya hace todo lo demás
     });
   }
 }
