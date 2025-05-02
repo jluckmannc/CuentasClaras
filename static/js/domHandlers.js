@@ -205,7 +205,7 @@ function cargarBotonesParticipantes() {
 export function crearGastoCard(nombreGasto, monto, pagador, participantesSeleccionados, index) {
   const card = document.createElement('div');
   card.className = 'gasto-card p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 mb-2 relative cursor-pointer overflow-hidden flex flex-col gap-2';
-  card.setAttribute('data-id', gastosList.length);
+  card.setAttribute('data-id', index);
   card.setAttribute('onclick', 'toggleAccordion(event)');
 
   const headerDiv = document.createElement('div');
