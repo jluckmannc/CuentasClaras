@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Sección: El problema -->
+<section class="bg-primary-light py-20 px-6">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <img src="{% static 'img/about/problemas en el campamento.png' %}" alt="Campamento y gastos" class="rounded-xl shadow-lg w-full">
+    </div>
+    <div class="text-neutral-mid text-base md:text-lg space-y-6 text-justify">
+      <h2 class="text-3xl font-bold text-primary-dark mb-4">El problema</h2>
+      <p>
+        En un campamento con amigos en 2017, descubrí una realidad tan cotidiana como molesta: cada vez que alguien salía a comprar algo —agua, pan, carbón, lo que fuera—, al volver era obligatorio dividir de inmediato el gasto entre quienes habían participado, antes de que alguien hiciera otra compra y los montos se confundieran. Este ritual se repetía varias veces al día y generaba un desgaste innecesario.
+      </p>
+      <p>
+        A esto se sumaba otro problema: no siempre teníamos sencillo, por lo que muchas veces había que redondear los montos, provocando pequeñas diferencias que —aunque mínimas— a lo largo del tiempo hacían que algunos terminaran pagando más que otros. No por mala fe, sino por la falta de un método justo, rápido y centralizado.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Sección: El algoritmo -->
+<section class="bg-white py-20 px-6">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center md:flex-row-reverse">
+    <div class="text-neutral-mid text-base md:text-lg space-y-6 text-justify">
+      <h2 class="text-3xl font-bold text-primary-dark mb-4">La idea</h2>
+      <p>
+        Como matemático, no pude evitar notar lo ineficiente y propenso a errores que era este sistema artesanal. Y fue ahí, en medio de la tierra, el viento y las risas, donde imaginé una herramienta que se encargara de todo ese enredo por nosotros: un algoritmo que, con solo ingresar los gastos y los nombres de quienes participaron, hiciera automáticamente los cálculos para equilibrar todo de forma justa.
+      </p>
+      <p>
+        Por ese entonces no tenía nombre, ni formato, ni líneas de código. Solo era una idea dibujada mentalmente, dando vueltas en mi cabeza. Años más tarde, cuando la necesidad volvió a tocar la puerta, tomé lápiz y teclado: primero un script en Python, luego una página improvisada en Django, pensada inicialmente solo para mi uso personal.
+      </p>
+    </div>
+    <div>
+      <img src="{% static 'img/about/pensando-la-idea.png' %}" alt="Pensando la idea" class="rounded-xl shadow-lg w-full">
+    </div>
+  </div>
+</section>
+
+<!-- Sección: Aplicación práctica -->
+<section class="bg-primary-light py-20 px-6">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <img src="{% static 'img/about/resolviendo-cuentas.png' %}" alt="resolviendo cuentas" class="rounded-xl shadow-lg w-full">
+    </div>
+    <div class="text-neutral-mid text-base md:text-lg space-y-6 text-justify">
+      <h2 class="text-3xl font-bold text-primary-dark mb-4">Cuando se volvió útil</h2>
+      <p>
+        Fue en nuestro grupo de baile donde esta herramienta demostró lo útil que podía llegar a ser. Solemos celebrar los cumpleaños de forma colectiva, comprando regalos entre varias personas. Pero organizar esos gastos —quién pagó, quién participa, cuánto le toca a cada uno— siempre resultaba más engorroso de lo que debería.
+      </p>
+      <p>
+        La herramienta que había programado permitió resolver todo eso en instantes. Ingresamos los datos, y listo: sabíamos exactamente quién le debía a quién y cuánto. Nada de cálculos a mano, nada de confusiones.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Sección: Equipo -->
+<section class="bg-white py-20 px-6">
+  <div class="max-w-6xl mx-auto text-center mb-20">
+    <h2 class="text-3xl font-bold text-primary-dark">¿Quiénes estamos detrás?</h2>
+    <p class="text-xl mt-4 max-w-4xl mx-auto">
+      Esta herramienta fue desarrollada por mí, Jaime Luckmann. En el proceso también colaboró mi primo Karl Luckmann, quien aportó en su área de especialidad: desde la identidad visual del proyecto hasta el diseño de elementos gráficos clave que dan vida a esta plataforma.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+    <!-- Jaime -->
+    <div class="bg-primary-light rounded-xl p-6 shadow hover:shadow-xl transition duration-200 hover:-translate-y-1 text-center">
+      <img src="{% static 'img/about/Jaime ilustración.png' %}" alt="Jaime Luckmann" class="h-64 mx-auto mb-4 rounded-full">
+      <h3 class="text-2xl font-bold text-primary-dark">Jaime Luckmann</h3>
+      <p class="text-neutral-mid text-md mb-1">Ingeniero Civil Matemático</p>
+      <p class="text-neutral-mid text-base">Responsable del desarrollo full stack: desde la lógica del algoritmo hasta la interfaz de usuario.</p>
+    </div>
+
+    <!-- Karl -->
+    <div class="bg-primary-light rounded-xl p-6 shadow hover:shadow-xl transition duration-200 hover:-translate-y-1 text-center">
+      <img src="{% static 'img/about/Karl ilustración.png' %}" alt="Karl Luckmann" class="h-64 mx-auto mb-4 rounded-full">
+      <h3 class="text-2xl font-bold text-primary-dark">Karl Luckmann</h3>
+      <p class="text-neutral-mid text-md mb-1">Diseñador gráfico</p>
+      <p class="text-neutral-mid text-base">Co-creador de la propuesta visual y estética del proyecto, desde los conceptos gráficos hasta su implementación.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Sección: Cierre / CTA -->
+<section class="bg-primary-light py-20 px-6 relative">
+  <!-- Separador SVG superior -->
+
+  <div class="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+    
+    <!-- Imagen -->
+    <div class="flex justify-center" data-aos="fade-right">
+      <img src="{% static 'img/about/organizando-cuentas-en-grupo.png' %}" 
+           alt="Organizando cuentas en grupo" 
+           class="rounded-xl shadow-lg w-full max-w-sm md:max-w-lg">
+    </div>
+
+    <!-- Texto -->
+    <div class="text-primary-dark text-center md:text-left space-y-4" data-aos="fade-left">
+      <h2 class="text-3xl font-bold">¿Quieres probar Cuentas Claras con tu grupo?</h2>
+      <p class="text-lg text-neutral-mid">
+        Olvídate de cálculos manuales, malentendidos y planillas confusas.
+        Con Cuentas Claras, organizar los gastos es simple, justo y rápido.
+      </p>
+      <a href="{% url 'wizard' %}" 
+         class="inline-block bg-primary-dark text-white font-semibold py-2 px-6 rounded-xl shadow border border-transparent hover:shadow-md transition hover:bg-primary-light hover:text-primary-dark hover:border-primary-dark">
+        Probar ahora
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+{% endblock %}

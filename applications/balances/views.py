@@ -4,11 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
-    return render(request, 'balances/home.html')
-
-def input_data(request):
-    return render(request, 'balances/input_data.html')
-
+    return render(request, 'static_pages/home.html')
 
 def procesar_gasto(gasto, totales_participantes, totales_pagados):
     """
@@ -144,4 +140,7 @@ def procesar_gastos(request):
 
 
 def wizard(request):
-    return render(request, 'develop/wizard.html')
+    return render(request, 'balances/wizard.html')
+
+def about(request):
+    return render(request, 'static_pages/about.html')
