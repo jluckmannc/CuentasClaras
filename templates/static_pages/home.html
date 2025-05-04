@@ -8,12 +8,12 @@
     const mobileCards = document.querySelectorAll('.mobile-lift');
 
     function liftCard(card) {
-      card.classList.add('translate-y-[-4px]', 'shadow-md');
+      card.classList.add('translate-y-[-4px]', 'shadow-md', 'bg-white');
       card.classList.remove('translate-y-0');
     }
 
     function resetCard(card) {
-      card.classList.remove('translate-y-[-4px]', 'shadow-md');
+      card.classList.remove('translate-y-[-4px]', 'shadow-md', 'bg-white');
       card.classList.add('translate-y-0');
     }
 
