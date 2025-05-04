@@ -79,8 +79,9 @@ export function initializeDOMHandlers() {
     const name = inputField.value.trim();
 
     if (name === '') return;
-
-    if (participantsList.includes(name)) {
+    
+    if (participantsList.some(participant => participant.nombre === name)) {
+    
       showError();
       inputField.value = '';
       return;
