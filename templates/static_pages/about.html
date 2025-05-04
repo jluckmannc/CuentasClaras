@@ -2,6 +2,44 @@
 {% load static %}
 
 {% block content %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.hover-card');
+
+    // Función para aplicar transición en móvil simulando hover
+    function applyMobileLiftEffect(card) {
+      card.classList.add('translate-y-[-4px]', 'shadow-xl');
+      card.classList.remove('translate-y-0');
+    }
+
+    function removeMobileLiftEffect(card) {
+      card.classList.remove('translate-y-[-4px]', 'shadow-xl');
+      card.classList.add('translate-y-0');
+    }
+
+    // Sólo si estamos en pantallas pequeñas (mobile)
+    if (window.innerWidth < 768) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            applyMobileLiftEffect(entry.target);
+          } else {
+            removeMobileLiftEffect(entry.target);
+          }
+        });
+      }, { threshold: 0.85 });
+
+      cards.forEach(card => {
+        // Asegura que tenga transición suave
+        card.classList.add('transition', 'duration-300', 'ease-in-out', 'translate-y-0');
+        observer.observe(card);
+      });
+    }
+  });
+</script>
+
+
 <!-- Sección: El problema -->
 <section class="bg-primary-light py-20 px-6">
   <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
@@ -68,7 +106,7 @@
   <div class="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
 
     <!-- Jaime -->
-    <div class="bg-primary-light rounded-xl p-6 shadow hover:shadow-xl transition duration-200 hover:-translate-y-1 text-center">
+    <div class="hover-card bg-primary-light rounded-xl p-6 shadow hover:shadow-xl transition duration-300 hover:-translate-y-1 text-center">
       <img src="{% static 'img/about/Jaime ilustración.png' %}" alt="Jaime Luckmann" class="h-64 mx-auto mb-4 rounded-full">
       <h3 class="text-[1.6rem] font-bold text-primary-dark">Jaime Luckmann</h3>
       <div class="flex justify-center mt-1">
@@ -83,7 +121,7 @@
     </div>
 
     <!-- Karl -->
-    <div class="bg-primary-light rounded-xl p-6 shadow hover:shadow-xl transition duration-200 hover:-translate-y-1 text-center">
+    <div class="hover-card bg-primary-light rounded-xl p-6 shadow hover:shadow-xl transition duration-300 hover:-translate-y-1 text-center">
       <img src="{% static 'img/about/Karl ilustración.png' %}" alt="Karl Luckmann" class="h-64 mx-auto mb-4 rounded-full">
       <h3 class="text-[1.6rem] font-bold text-primary-dark">Karl Luckmann</h3>
       <div class="flex justify-center mt-1">
