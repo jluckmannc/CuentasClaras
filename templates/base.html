@@ -14,14 +14,20 @@
   <!-- Tu CSS de Tailwind -->
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
 
-  <!-- Pequeño script para abrir/cerrar menú -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const menuBtn = document.getElementById('menu-btn');
-      const menu = document.getElementById('menu');
-      
+      const mobileMenu = document.getElementById('mobile-menu');
+  
       menuBtn.addEventListener('click', () => {
-        menu.classList.toggle('hidden');
+        const isOpen = !mobileMenu.classList.contains('max-h-0');
+        if (isOpen) {
+          mobileMenu.classList.remove('max-h-[300px]');
+          mobileMenu.classList.add('max-h-0');
+        } else {
+          mobileMenu.classList.remove('max-h-0');
+          mobileMenu.classList.add('max-h-[300px]');
+        }
       });
     });
   </script>
@@ -30,30 +36,43 @@
 <body class="bg-primary-light font-body text-primary-dark min-h-screen flex flex-col">
 
   <!-- Navbar -->
-  <nav class="bg-primary-dark py-4 px-6 flex items-center justify-between shadow-md relative">
-    <a href="{% url 'home' %}" class="flex items-center space-x-2">
-      <img src="{% static 'img/logo.png' %}" alt="Logo Cuentas Claras" class="h-8">
-      <span class="text-neutral font-logo text-lg font-semibold">CUENTAS CLARAS</span>
-    </a>
-
-    <!-- Botón hamburguesa (sólo en móvil) -->
-    <button id="menu-btn" class="text-neutral focus:outline-none md:hidden text-2xl">
-      ☰
-    </button>
-
-    <!-- Menú de navegación -->
-    <div id="menu" class="hidden md:flex md:items-center md:space-x-6 absolute top-full left-0 w-full bg-primary-dark md:static md:w-auto md:bg-transparent p-6 md:p-0 space-y-4 md:space-y-0 flex-col md:flex-row z-50">
-      <a href="{% url 'home' %}" class="text-neutral font-body text-sm md:text-base hover:text-secondary transition-all duration-300 ease-in-out underline-offset-4 hover:underline">
-        Inicio
-      </a>
-      <a href="{% url 'about' %}" class="text-neutral font-body text-sm md:text-base hover:text-secondary transition-all duration-300 ease-in-out underline-offset-4 hover:underline">
-        Sobre el proyecto
-      </a>
-      <a href="#" class="bg-secondary hover:bg-secondary-hover text-white font-body font-semibold py-2 px-4 rounded-full text-sm md:text-base transform hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out">
-        Crear Cuenta
-      </a>
+  <nav class="bg-primary-dark text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex-shrink-0">
+          <a href="{% url 'home' %}" class="flex items-center">
+            <img class="h-8 w-8" src="{% static 'img/logo.png' %}" alt="Logo">
+            <span class="ml-2 font-bold text-lg">Cuentas Claras</span>
+          </a>
+        </div>
+        <!-- Menú de navegación -->
+        <div class="hidden md:block">
+          <div class="ml-10 flex items-baseline space-x-4">
+            <a href="{% url 'home' %}" class="px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out underline-offset-4 hover:underline hover:text-secondary">Inicio</a>
+            <a href="{% url 'about' %}" class="px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out underline-offset-4 hover:underline hover:text-secondary">Sobre el proyecto</a>
+          </div>
+        </div>
+        <!-- Botón hamburguesa -->
+        <div class="-mr-2 flex md:hidden">
+          <button id="menu-btn" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-white">
+            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+              <path class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Menú móvil -->
+    <div id="mobile-menu" class="md:hidden max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+      <div class="px-2 pt-2 pb-3 space-y-2 sm:px-3">
+        <a href="{% url 'home' %}" class="block px-3 py-2 rounded-md text-base font-medium transition-all duration-500 ease-in-out underline-offset-4 hover:underline hover:text-secondary">Inicio</a>
+        <a href="{% url 'about' %}" class="block px-3 py-2 rounded-md text-base font-medium transition-all duration-500 ease-in-out underline-offset-4 hover:underline hover:text-secondary">Sobre el proyecto</a>
+      </div>
     </div>
   </nav>
+  
 
   <!-- Contenido principal -->
   <main class="flex-1">
