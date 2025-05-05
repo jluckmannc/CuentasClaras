@@ -292,12 +292,12 @@
   <!-- Scripts -->
   <script type="module" src="{% static 'js/stateManager.js' %}"></script>
   <script type="module" src="{% static 'js/domHandlers.js' %}"></script>
-  <script type="module" src="{% static 'js/apiService.js' %}"></script>
-  <script type="module" src="{% static 'js/ResultRenderer.js' %}"></script>
-  <script type="module" src="{% static 'js/utils.js' %}"></script>
+  <script type="module" src="{% static 'js/apiService.js' %}"></script> {% endcomment %}
+  {% comment %} <script type="module" src="{% static 'js/ResultRenderer.js' %}"></script> {% endcomment %}
+  {% comment %} <script type="module" src="{% static 'js/utils.js' %}"></script>
 
   <script type="module">
-    import { 
+    {% comment %} import { 
       initializeDOMHandlers, 
       // initializeGastosHandlers, 
       openModal, 
@@ -314,6 +314,6 @@
       initializeDOMHandlers();
       initializeWizardNavigation();
       initializeEditModalHandlers();
-    });
+    }); {% endcomment %}
   </script>
   {% endblock %}
