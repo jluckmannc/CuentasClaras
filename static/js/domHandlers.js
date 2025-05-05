@@ -13,13 +13,23 @@ import {
   gastosList} 
   from './stateManager.js';
 
+    // Mostrar error de validación
+export function showError(errorMessage, message = 'Ese participante ya fue agregado.') {
+      errorMessage.textContent = message;
+      errorMessage.classList.remove('opacity-0', 'translate-y-2');
+      errorMessage.classList.add('opacity-100', 'translate-y-0');
+  
+      setTimeout(() => {
+        errorMessage.classList.add('opacity-0', 'translate-y-2');
+        errorMessage.classList.remove('opacity-100', 'translate-y-0');
+      }, 3000);
+  }
 // Inicializador del Paso 1 (Participantes)
 export function initializeDOMHandlers() {
   const errorMessage = document.getElementById('error-message');
   const inputField = document.getElementById('friend-input');
   const addButton = document.getElementById('add-friend');
   const friendsListContainer = document.getElementById('friends-list');
-  const continuarButton = document.getElementById('go-to-step-2');
 
   // Crear un chip visual de participante
   function createFriendChip(name) {
@@ -51,27 +61,12 @@ export function initializeDOMHandlers() {
         });
       }
       chip.remove();
-      console.log(participantsList);
-      console.log(gastosList);
-      
       
     });
 
     chip.appendChild(span);
     chip.appendChild(removeButton);
     return chip;
-  }
-
-  // Mostrar error de validación
-  function showError(message = 'Ese participante ya fue agregado.') {
-    errorMessage.textContent = message;
-    errorMessage.classList.remove('opacity-0', 'translate-y-2');
-    errorMessage.classList.add('opacity-100', 'translate-y-0');
-
-    setTimeout(() => {
-      errorMessage.classList.add('opacity-0', 'translate-y-2');
-      errorMessage.classList.remove('opacity-100', 'translate-y-0');
-    }, 3000);
   }
 
   // Agregar participante
@@ -82,7 +77,7 @@ export function initializeDOMHandlers() {
     
     if (participantsList.some(participant => participant.nombre === name)) {
     
-      showError();
+      showError(errorMessage);
       inputField.value = '';
       return;
     }
