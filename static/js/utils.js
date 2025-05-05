@@ -1,7 +1,9 @@
 // utils.js
-import { initializeGastosHandlers, crearGastoCard } from './domHandlers.js';
+import { initializeGastosHandlers, crearGastoCard, showError } from './domHandlers.js';
 import { gastosList } from './stateManager.js';
 import { enviarDatosAGestionar, renderResultados } from './resultRenderer.js';
+import { participantsList } from './stateManager.js';
+
 
 // Estado de la navegación
 let _pasoActual = 1;
@@ -157,12 +159,16 @@ export function initializeWizardNavigation() {
   }
 
   botonPaso1.addEventListener('click', () => {
-    pasoSiguiente();
-    activarWizardPaso(2);
+    if (participantsList.length >= 2) {
+      pasoSiguiente();
+      activarWizardPaso(2);
+    } else {
+      const errorMessage = document.getElementById('error-message');
+      showError(errorMessage, "Debes agregar al menos 2 participantes para continuar.")
+    }
   });
 
   botonPaso2.addEventListener('click', () => {
-    
     pasoSiguiente();
     activarWizardPaso(3);
   });
