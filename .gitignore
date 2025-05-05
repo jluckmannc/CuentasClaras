@@ -42,3 +42,6 @@ applications/balances/__pycache__/develop.cpython-39.pyc
 applications/balances/__pycache__/__init__.cpython-39.pyc
 applications/balances/__pycache__/admin.cpython-39.pyc
 static/js/antes/*.js
+applications/balances/migrations/__pycache__/__init__.cpython-310.pyc
+cuentasclaras/__pycache__/*.pyc
+
