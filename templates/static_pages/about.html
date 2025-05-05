@@ -37,6 +37,24 @@
       });
     }
   });
+
+  function updateTextColors() {
+    const elements = document.querySelectorAll('.cambio-color-texto');
+
+    elements.forEach(el => {
+      if (window.innerWidth < 768) {
+        el.classList.remove('text-neutral-mid');
+        el.classList.add('text-primary-dark');
+      } else {
+        el.classList.remove('text-primary-dark');
+        el.classList.add('text-neutral-mid');
+      }
+    });
+  }
+
+  // Ejecutar al cargar y cuando se redimensiona la pantalla
+  document.addEventListener('DOMContentLoaded', updateTextColors);
+  window.addEventListener('resize', updateTextColors);
 </script>
 
 
@@ -114,8 +132,9 @@
           <img src="{% static 'img/about/linkedin.svg' %}" alt="LinkedIn" class="h-6 w-6 opacity-80 hover:opacity-100 hover:scale-110 transition-transform duration-300" />
         </a>
       </div>
-      <p class="text-neutral-mid md:text-primary-dark text-base mt-3 font-medium">Ingeniero Civil Matemático</p>
-      <p class="text-neutral-mid md:text-primary-dark text-sm leading-relaxed mt-2">
+      <p class="text-base mt-3 font-medium cambio-color-texto">
+        Ingeniero Civil Matemático</p>
+      <p class="text-sm leading-relaxed mt-2 cambio-color-texto">
         Responsable del desarrollo full stack: desde la lógica del algoritmo hasta la interfaz de usuario.
       </p>
     </div>
@@ -129,8 +148,8 @@
           <img src="{% static 'img/about/linkedin.svg' %}" alt="LinkedIn" class="h-6 w-6 opacity-80 hover:opacity-100 hover:scale-110 transition-transform duration-300" />
         </a>
       </div>
-      <p class="text-neutral-mid md:text-primary-dark text-base mt-3 font-medium">Diseñador gráfico</p>
-      <p class="text-neutral-mid md:text-primary-dark text-sm leading-relaxed mt-2">
+      <p class="text-base mt-3 font-medium cambio-color-texto">Diseñador gráfico</p>
+      <p class="text-sm leading-relaxed mt-2 cambio-color-texto">
         Co-creador de la propuesta visual y estética del proyecto, desde los conceptos gráficos hasta su implementación.
       </p>
     </div>
