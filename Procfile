@@ -1,0 +1,1 @@
+web: gunicorn cuentasclaras.wsgi --log-file -
