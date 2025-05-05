@@ -1,8 +1,10 @@
 from django.urls import path
-from .views import home, input_data, procesar_gastos
+from .views import home, procesar_gastos, wizard, about
 
 urlpatterns = [
-    path('', home, name=''),
-    path('input-data/', input_data, name='input_data'),
+    path('', home, name='home'),
     path('procesar-gastos/', procesar_gastos, name='procesar_gastos'),
+    # Develop
+    path('organizar-gastos/', wizard, name='wizard'),
+    path('acerca-de/', about, name='about'),
 ]

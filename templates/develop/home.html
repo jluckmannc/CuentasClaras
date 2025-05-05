@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="bg-primary-light px-6 py-12 md:py-20 flex flex-col items-center text-center">
+  <!-- Hero principal -->
+  <div class="max-w-3xl">
+    <h1 class="text-3xl md:text-5xl font-bold text-primary-dark leading-tight mb-6">
+      Divide tus gastos de forma clara, rápida y justa
+    </h1>
+    <p class="text-neutral-mid text-base md:text-lg mb-6">
+      Cuentas Claras está optimizada para calcular <span class="font-semibold text-secondary">el menor número de transferencias</span> posibles entre tu grupo.
+    </p>
+    <a href="{% url 'wizard' %}" class="inline-block bg-secondary hover:bg-secondary-hover text-white font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 active:scale-95">
+      Empezar ahora
+    </a>
+  </div>
+
+  <!-- Imagen o ilustración -->
+  <img src="{% static 'img/hero-illustration.png' %}" alt="Ilustración finanzas" class="w-3/4 md:w-1/2 mt-10">
+</div>
+
+<!-- Sección: ¿Cómo funciona? -->
+<section class="py-16 bg-white px-6">
+  <h2 class="text-2xl md:text-3xl font-bold text-center text-primary-dark mb-12"> ¿Cómo funciona?</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+    <div class="flex flex-col items-center text-center">
+      <img src="{% static 'img/step-participants.png' %}" alt="Participantes" class="w-16 h-16 mb-4">
+      <h3 class="font-semibold text-primary-dark text-lg mb-1">Participantes</h3>
+      <p class="text-sm text-neutral-mid">Agrega los nombres de quienes compartirán los gastos.</p>
+    </div>
+    <div class="flex flex-col items-center text-center">
+      <img src="{% static 'img/step-expenses.png' %}" alt="Gastos" class="w-16 h-16 mb-4">
+      <h3 class="font-semibold text-primary-dark text-lg mb-1">Gastos</h3>
+      <p class="text-sm text-neutral-mid">Registra cada gasto, quién pagó y quién participó.</p>
+    </div>
+    <div class="flex flex-col items-center text-center">
+      <img src="{% static 'img/step-results.png' %}" alt="Resultados" class="w-16 h-16 mb-4">
+      <h3 class="font-semibold text-primary-dark text-lg mb-1">Resultado</h3>
+      <p class="text-sm text-neutral-mid">Obtén el balance final y sabrás quién le debe a quién.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Beneficios clave -->
+<section class="bg-primary-light py-16 px-6">
+  <h2 class="text-2xl md:text-3xl font-bold text-center text-primary-dark mb-12"> ¡Por qué usar Cuentas Claras?</h2>
+  <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="flex items-start gap-4">
+      <span class="text-secondary text-xl">✅</span>
+      <p class="text-primary-dark text-sm">Evita confusiones en los grupos. Todo queda claro.</p>
+    </div>
+    <div class="flex items-start gap-4">
+      <span class="text-secondary text-xl">🧠</span>
+      <p class="text-primary-dark text-sm">Calcula quién le paga a quién con <strong>el menor número de transferencias</strong>.</p>
+    </div>
+    <div class="flex items-start gap-4">
+      <span class="text-secondary text-xl">🎯</span>
+      <p class="text-primary-dark text-sm">Interfaz simple, visual y sin registros.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Mini Sobre el Proyecto -->
+<section class="bg-white py-16 px-6 text-center">
+  <h2 class="text-2xl md:text-3xl font-bold text-primary-dark mb-6">Sobre el proyecto</h2>
+  <p class="text-neutral-mid max-w-2xl mx-auto text-base md:text-lg">
+    Cuentas Claras es un proyecto personal nacido del deseo de simplificar la vida de quienes comparten gastos. Ya sea un viaje, cumpleaños o convivencia: todo se resuelve con unos pocos clics.
+  </p>
+  <a href="{% url 'wizard' %}" class="mt-8 inline-block bg-secondary hover:bg-secondary-hover text-white font-bold py-3 px-6 rounded-full text-lg transition-all duration-300 transform hover:scale-105 active:scale-95">
+    Empezar ahora
+  </a>
+</section>
+{% endblock %}

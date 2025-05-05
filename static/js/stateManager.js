@@ -1,42 +1,40 @@
-// stateManager.js
+export const participantsList = [];
+export const gastosList = [];
 
-// Estado actual de amigos y gastos
-let currentFriends = []; // Lista de amigos
-let currentExpenses = []; // Lista de gastos
+// ✅ Datos de prueba si estás en #paso2
+if (window.location.hash === '#paso2') {
+  participantsList.push(
+    { id: 1, nombre: "Camila" },
+    { id: 2, nombre: "Esteban" },
+    { id: 3, nombre: "Rocío" },
+    { id: 4, nombre: "Damián" },
+    { id: 5, nombre: "Martina" },
+    { id: 6, nombre: "Lucas" },
+    { id: 7, nombre: "Bastián" },
+    { id: 8, nombre: "Paula" },
+    { id: 9, nombre: "Tomás" },
+    { id: 10, nombre: "Ignacia" },
+    { id: 11, nombre: "Felipe" }
+  );
 
-// Función para obtener los amigos actuales
-export function getCurrentFriends() {
-    return currentFriends;
-}
-
-// Función para actualizar los amigos
-export function updateFriends(newFriends) {
-    currentFriends = newFriends;
-}
-
-// Función para agregar un gasto
-export function addExpense(expense) {
-    currentExpenses.push(expense);
-}
-
-// Función para obtener los gastos actuales
-export function getCurrentExpenses() {
-    return currentExpenses;
-}
-
-// Función para sincronizar gastos desde el DOM
-export function syncExpensesFromDOM(expensesList) {
-    expensesList.querySelectorAll('.expense-item').forEach((item, index) => {
-        const nameInput = item.querySelector('input[name="expense_name"]');
-        const amountInput = item.querySelector('input[name="expense_amount"]');
-        const payerSelect = item.querySelector('select[name="payer"]');
-        const participantsCheckboxes = item.querySelectorAll('input[name="participants"]:checked');
-
-        currentExpenses[index] = {
-            name: nameInput ? nameInput.value.trim() : '',
-            amount: amountInput ? parseFloat(amountInput.value) || 0 : 0,
-            payer: payerSelect ? payerSelect.value : '',
-            participants: Array.from(participantsCheckboxes).map(input => input.value),
-        };
-    });
+  gastosList.push(
+    {
+      expense_name: "Desayuno en cafetería",
+      expense_amount: 8420,
+      payer: "Camila",
+      participants: ["Camila", "Esteban", "Rocío"]
+    },
+    {
+      expense_name: "Arriendo de cabaña",
+      expense_amount: 48450,
+      payer: "Lucas",
+      participants: ["Martina", "Lucas", "Bastián", "Paula"]
+    },
+    {
+      expense_name: "Tour guiado",
+      expense_amount: 19800,
+      payer: "Tomás",
+      participants: ["Tomás", "Ignacia", "Felipe", "Rocío", "Damián"]
+    }
+  );
 }

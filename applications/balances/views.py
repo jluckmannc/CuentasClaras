@@ -4,11 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
-    return render(request, 'balances/home.html')
-
-def input_data(request):
-    return render(request, 'balances/input_data.html')
-
+    return render(request, 'static_pages/home.html')
 
 def procesar_gasto(gasto, totales_participantes, totales_pagados):
     """
@@ -99,37 +95,52 @@ def calcular_balances(datos):
     }
 
 @csrf_exempt
+def agrupar_transacciones(transacciones):
+    agrupado = {}
+    for t in transacciones:
+        partes = t.split(" paga $")
+        deudor = partes[0]
+        monto, acreedor = partes[1].split(" a ")
+        monto = int(monto)
+
+        if acreedor not in agrupado:
+            agrupado[acreedor] = []
+
+        agrupado[acreedor].append({
+            "deudor": deudor,
+            "monto": monto
+        })
+    print()
+    print(agrupado)
+    print()
+    return agrupado
+
+@csrf_exempt
 def procesar_gastos(request):
     if request.method == 'POST':
         try:
             # Parsear el cuerpo de la solicitud como JSON
             datos = json.loads(request.body)
-            print()
-            print()
-            print(datos)
-            print()
-            print()
 
             # Llamar a la función de cálculo de balances
             resultado = calcular_balances(datos)
-
-            # Mostrar balances y transacciones en la consola
-            print("Balances:")
-            for persona, balance in resultado["balances"].items():
-                print(f"{persona}: {balance}")
-
-            print("\nTransacciones:")
-            for transaccion in resultado["transacciones"]:
-                print(transaccion)
 
             # Responder con los balances y transacciones al frontend
             return JsonResponse({
                 "status": "success",
                 "balances": resultado["balances"],
-                "transacciones": resultado["transacciones"]
+                "resumen": agrupar_transacciones(resultado["transacciones"])
             })
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Datos JSON inválidos"}, status=400)
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
+
+
+
+def wizard(request):
+    return render(request, 'balances/wizard.html')
+
+def about(request):
+    return render(request, 'static_pages/about.html')

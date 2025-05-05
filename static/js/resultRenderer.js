@@ -1,73 +1,105 @@
-// resultRenderer.js
+import { gastosList } from './stateManager.js';
 
-// Función para mostrar los resultados en el DOM
-export function mostrarResultados(data) {
-  let resultsContainer = document.getElementById('results');
+// 🔹 Renderiza las transacciones agrupadas por acreedor
+export function renderResultados(resumen) {
+  
+  const contenedor = document.getElementById('resultado-contenedor');
+  contenedor.innerHTML = ''; // Limpiar contenido previo
 
-  if (!resultsContainer) {
-      resultsContainer = document.createElement('div');
-      resultsContainer.id = 'results';
-      resultsContainer.classList.add('mt-6', 'p-4', 'border', 'border-gray-300', 'rounded-md', 'bg-gray-50');
-      document.querySelector('form').parentElement.appendChild(resultsContainer);
+  for (const [acreedor, deudores] of Object.entries(resumen)) {
+    const bloque = document.createElement('div');
+    bloque.className = 'bg-white rounded-2xl shadow-md p-6';
+
+    const titulo = document.createElement('h3');
+    titulo.className = 'text-primary-dark font-bold text-base mb-2';
+    titulo.innerHTML = `👉 A <span class="text-secondary">${acreedor}</span>:`; // Nombre en color
+
+    const lista = document.createElement('ul');
+    lista.className = 'text-sm text-neutral-mid list-disc list-inside space-y-1';
+    
+    deudores.forEach(({ deudor, monto }) => {
+      const item = document.createElement('li');
+      item.innerHTML = `<strong>${deudor}</strong> paga <span class="text-primary-dark">$${monto.toLocaleString('es-CL')}</span>`;
+      lista.appendChild(item);
+    });
+    
+
+    bloque.appendChild(titulo);
+    bloque.appendChild(lista);
+    contenedor.appendChild(bloque);
   }
-
-  resultsContainer.innerHTML = `
-      <h3 class="text-xl font-bold mb-4 text-gray-800">Resultados:</h3>
-  `;
-
-  if (data.transacciones) {
-      resultsContainer.innerHTML += `
-          <h4 class="text-lg font-bold mb-2 text-gray-700">Transacciones:</h4>
-          <ul>
-              ${data.transacciones.map(transaccion => `<li>${transaccion}</li>`).join('')}
-          </ul>
-      `;
-  }
-
-  const chartContainer = document.createElement('div');
-  chartContainer.classList.add('mt-6');
-  chartContainer.innerHTML = `
-      <h4 class="text-lg font-bold mb-2 text-gray-700">Balances:</h4>
-      <canvas id="balanceChart"></canvas>
-  `;
-  resultsContainer.appendChild(chartContainer);
-
-  const labels = Object.keys(data.balances);
-  const balances = Object.values(data.balances);
-
-  const ctx = document.getElementById('balanceChart').getContext('2d');
-  new Chart(ctx, {
-      type: 'bar',
-      data: {
-          labels: labels,
-          datasets: [{
-              label: 'Balance',
-              data: balances,
-              backgroundColor: balances.map(balance => balance >= 0 ? 'rgba(34, 197, 94, 0.7)' : 'rgba(239, 68, 68, 0.7)'),
-              borderColor: balances.map(balance => balance >= 0 ? 'rgba(34, 197, 94, 1)' : 'rgba(239, 68, 68, 1)'),
-              borderWidth: 1,
-          }],
-      },
-      options: {
-          responsive: true,
-          scales: {
-              y: {
-                  beginAtZero: true,
-              },
-              x: {
-                  ticks: {
-                      autoSkip: false,
-                      maxRotation: 90,
-                      minRotation: 45,
-                  },
-              },
-          },
-      },
-  });
 }
 
-// Escuchar el evento disparado desde apiService.js
-document.addEventListener('serverResponse', (event) => {
-  const data = event.detail;
-  mostrarResultados(data);
-});
+function mostrarToastResultado(mensaje) {
+  const toast = document.getElementById('toastResultado');
+  toast.textContent = mensaje;
+  toast.classList.remove('hidden', 'opacity-0');
+  toast.classList.add('opacity-100');
+
+  setTimeout(() => {
+    toast.classList.remove('opacity-100');
+    toast.classList.add('opacity-0');
+  }, 2000);
+
+  setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 2500);
+}
+
+// 🔹 Permite copiar el resumen en texto plano
+export function copiarResultadosTexto() {
+  const resumenCopiable = document.getElementById('resumen-copiable');
+  const bloques = document.querySelectorAll('#resultado-contenedor > div');
+  const texto = [];
+
+  bloques.forEach(bloque => {
+    const titulo = bloque.querySelector('h3')?.textContent || '';
+    texto.push(titulo);
+    const items = bloque.querySelectorAll('li');
+    items.forEach(li => texto.push(`- ${li.textContent}`));
+    texto.push('');
+  });
+
+  resumenCopiable.value = texto.join('\n');
+  resumenCopiable.classList.remove('hidden');
+  resumenCopiable.select();
+  document.execCommand('copy');
+  resumenCopiable.classList.add('hidden');
+
+  mostrarToastResultado("Resumen copiado al portapapeles");
+}
+
+
+
+export async function enviarDatosAGestionar() {
+  const payload = { expenses: gastosList };
+
+  try {
+    const response = await fetch('/procesar-gastos/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCSRFToken()
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (data.status === 'success') {
+      return data; // <--- ESTA ES LA LÍNEA CLAVE
+    } else {
+      console.error('❌ Error en la respuesta del servidor:', data);
+      return null;
+    }
+  } catch (error) {
+    console.error('❌ Error en fetch:', error);
+    return null;
+  }
+}
+
+
+function getCSRFToken() {
+  const cookie = document.cookie.match(/csrftoken=([^;]*)/);
+  return cookie ? cookie[1] : '';
+}
