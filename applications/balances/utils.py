@@ -29,6 +29,7 @@ def calcular_balances_individuales(totales_participantes, totales_pagados):
         debe = totales_participantes.get(persona, 0)
         pago = totales_pagados.get(persona, 0)
         balances[persona] = round(pago - debe)
+
     return dict(sorted(balances.items(), key=lambda item: item[1]))
 
 
@@ -83,14 +84,16 @@ def calcular_balances(datos):
     # Ajustar balances para determinar quién debe pagar a quién
     transacciones = ajustar_balances(balances)
 
-    return {
-        "balances": balances,
-        "transacciones": transacciones
-    }
+    agrupar_transacciones_por_deudor(transacciones)
+
+    return balances, transacciones
 
 
 @csrf_exempt
-def agrupar_transacciones(transacciones):
+def agrupar_transacciones_por_acreedor(transacciones):
+    """
+    Agrupa las transacciones por acreedor para facilitar la visualización.
+    """
     agrupado = {}
     for t in transacciones:
         partes = t.split(" paga $")
@@ -103,6 +106,37 @@ def agrupar_transacciones(transacciones):
 
         agrupado[acreedor].append({
             "deudor": deudor,
+            "monto": monto
+        })
+    
+    return agrupado
+
+
+
+
+
+
+
+
+
+
+@csrf_exempt
+def agrupar_transacciones_por_deudor(transacciones):
+    """Esta función podría servir en el futuro
+    para obtener diferentes formas de entregar
+    los resultados al frontend."""
+    agrupado = {}
+    for t in transacciones:
+        partes = t.split(" paga $")
+        deudor = partes[0]
+        monto, acreedor = partes[1].split(" a ")
+        monto = int(monto)
+
+        if deudor not in agrupado:
+            agrupado[deudor] = []
+
+        agrupado[deudor].append({
+            "acreedor": acreedor,
             "monto": monto
         })
     return agrupado

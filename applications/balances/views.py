@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .utils import calcular_balances, agrupar_transacciones
+from .utils import calcular_balances, agrupar_transacciones_por_acreedor
 
 
 def home(request):
@@ -20,15 +20,13 @@ def procesar_gastos(request):
             datos = json.loads(request.body)
 
             # Llamar a la función de cálculo de balances
-            resultado = calcular_balances(datos)
+            balances, transacciones = calcular_balances(datos)
 
             # Responder con los balances y transacciones al frontend
-            print(f"balances: {resultado['balances']}")
-            print(f"transacciones: {agrupar_transacciones(resultado['transacciones'])}")
             return JsonResponse({
                 "status": "success",
-                "balances": resultado["balances"],
-                "resumen": agrupar_transacciones(resultado["transacciones"])
+                "balances": balances,
+                "resumen": agrupar_transacciones_por_acreedor(transacciones)
             })
 
         except json.JSONDecodeError:
