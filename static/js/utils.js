@@ -22,16 +22,19 @@ export function setPasoActual(valor) {
 export function renderizarSeccionActual() {
   const paso1 = document.getElementById('step-participants');
   const paso2 = document.getElementById('step-gastos');
-  const paso3 = document.getElementById('step-resultados');
+  const paso3 = document.getElementById('step-reparto');
+  const paso4 = document.getElementById('step-resultados');
 
   if (getPasoActual() === 1) {
     paso1.classList.remove('hidden');
     paso2.classList.add('hidden');
     paso3.classList.add('hidden');
+    paso4.classList.add('hidden');
   } else if (getPasoActual() === 2) {
     paso1.classList.add('hidden');
     paso2.classList.remove('hidden');
     paso3.classList.add('hidden');
+    paso4.classList.add('hidden');
     initializeGastosHandlers();
     // 🧼 Limpiar contenedor visual
     const gastosContainer = document.getElementById('gastos-container');
@@ -49,7 +52,7 @@ export function renderizarSeccionActual() {
       gastosContainer.appendChild(card);
     });
 
-    // 👁️ Ocultar botón continuar si ya no hay gastos
+    // Ocultar botón continuar si ya no hay gastos
     const continuarBtn = document.getElementById('go-to-step-3');
     if (gastosList.length === 0) {
       continuarBtn.classList.add('hidden');
@@ -57,15 +60,19 @@ export function renderizarSeccionActual() {
       continuarBtn.classList.remove('hidden');
     }
   } else if (getPasoActual() === 3) {
-    enviarDatosAGestionar().then(res => {
-      // if (res?.resumen) {
-        
-        renderResultados(res.resumen);
-      // }
-    });
     paso1.classList.add('hidden');
     paso2.classList.add('hidden');
     paso3.classList.remove('hidden');
+    paso4.classList.add('hidden');
+  } 
+   else if (getPasoActual() === 4) {
+    enviarDatosAGestionar().then(res => {
+        renderResultados(res.resumen);
+    });
+    paso1.classList.add('hidden');
+    paso2.classList.add('hidden');
+    paso3.classList.add('hidden');
+    paso4.classList.remove('hidden');
   }
 }
 
@@ -154,7 +161,10 @@ export function initializeWizardNavigation() {
 
   } else if (window.location.hash === '#paso3') {
     setPasoActual(3);
-  } else {
+  } else if (window.location.hash === '#paso3') {
+    setPasoActual(4);
+  }
+   else {
     setPasoActual(1);
   }
 
