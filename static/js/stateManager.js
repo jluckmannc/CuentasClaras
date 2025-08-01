@@ -39,7 +39,3 @@ if (window.location.hash === '#paso2') {
   );
 }
 
-
-if (window.location.hash === '#paso3') {
-
-}
