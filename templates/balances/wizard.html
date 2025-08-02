@@ -7,41 +7,45 @@
     <!-- Logo -->
     <img src="{% static 'img/logo.png' %}" alt="Logo Cuentas Claras" class="h-16 md:h-20 mb-6">
 
-    <!-- Flujo de pasos -->
-    <div class="flex items-center justify-center mb-8 md:mb-10 space-x-4 md:space-x-8">
-
-      <div class="wizard-step flex flex-col items-center">
+    <div class="flex items-center w-full mb-8 md:mb-10 max-w-md mx-auto gap-x-2 md:gap-x-4">
+      <!-- Paso 1 -->
+      <div class="wizard-step flex flex-col items-center shrink-0 w-16">
         <div id="wizard-1" class="w-6 h-6 rounded-full bg-primary-dark flex items-center justify-center text-white text-sm">1</div>
-        <p class="mt-2 text-xs md:text-sm font-body text-primary-dark">Participantes</p>
+        <p class="mt-1 text-[11px] sm:text-xs font-body text-primary-dark whitespace-nowrap">Participantes</p>
       </div>
 
-      <div id="conector-1-2" class="relative wizard-connector overflow-hidden w-10 h-1 bg-neutral-light md:w-16">
-        <div class="barra-interna absolute left-0 top-0 h-full bg-primary-dark transition-all duration-500 ease-linear" style="width: 0%;"></div>
+      <!-- Conector 1‑2 -->
+      <div class="relative flex-1 h-[2px] bg-neutral-light">
+        <div id="conector-1-2" class="absolute inset-0 bg-primary-dark transition-all duration-500 ease-linear" style="width:0%"></div>
       </div>
 
-      <div class="wizard-step flex flex-col items-center">
-        <div id="wizard-2"  class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">2</div>
-        <p class="mt-2 text-xs md:text-sm font-body text-neutral-mid">Gastos</p>
+      <!-- Paso 2 -->
+      <div class="wizard-step flex flex-col items-center shrink-0 w-16">
+        <div id="wizard-2" class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">2</div>
+        <p class="mt-1 text-[11px] sm:text-xs font-body text-neutral-mid whitespace-nowrap">Gastos</p>
       </div>
 
-      <div id="conector-2-3" class="relative wizard-connector overflow-hidden w-10 h-1 bg-neutral-light md:w-16">
-        <div class="barra-interna absolute left-0 top-0 h-full bg-primary-dark transition-all duration-500 ease-linear" style="width: 0%;"></div>
+      <!-- Conector 2‑3 -->
+      <div class="relative flex-1 h-[2px] bg-neutral-light">
+        <div id="conector-2-3" class="absolute inset-0 bg-primary-dark transition-all duration-500 ease-linear" style="width:0%"></div>
       </div>
 
-      <div class="wizard-step flex flex-col items-center">
-        <div id="wizard-3"  class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">3</div>
-        <p class="mt-2 text-xs md:text-sm font-body text-neutral-mid">Reparto</p>
+      <!-- Paso 3 -->
+      <div class="wizard-step flex flex-col items-center shrink-0 w-16">
+        <div id="wizard-3" class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">3</div>
+        <p class="mt-1 text-[11px] sm:text-xs font-body text-neutral-mid whitespace-nowrap">Reparto</p>
       </div>
 
-      <div id="conector-3-4" class="relative wizard-connector overflow-hidden w-10 h-1 bg-neutral-light md:w-16">
-        <div class="barra-interna absolute left-0 top-0 h-full bg-primary-dark transition-all duration-500 ease-linear" style="width: 0%;"></div>
+      <!-- Conector 3‑4 -->
+      <div class="relative flex-1 h-[2px] bg-neutral-light">
+        <div id="conector-3-4" class="absolute inset-0 bg-primary-dark transition-all duration-500 ease-linear" style="width:0%"></div>
       </div>
 
-      <div class="wizard-step flex flex-col items-center">
+      <!-- Paso 4 -->
+      <div class="wizard-step flex flex-col items-center shrink-0 w-16">
         <div id="wizard-4" class="w-6 h-6 rounded-full bg-neutral-light flex items-center justify-center text-primary-dark text-sm">4</div>
-        <p class="mt-2 text-xs md:text-sm font-body text-neutral-mid">Resultado</p>
+        <p class="mt-1 text-[11px] sm:text-xs font-body text-neutral-mid whitespace-nowrap">Resultado</p>
       </div>
-
     </div>
 
     <!-- Paso 1: Participantes -->
