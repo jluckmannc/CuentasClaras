@@ -98,29 +98,65 @@ function smoothScrollToTop(callback) {
 
 export function cambiarPaso(nuevoPaso) {
   const pasoActual = getPasoActual();
-  const direccion = nuevoPaso > pasoActual ? 'avanzar' : 'retroceder';
-  
-  const conectorId = `#conector-${Math.min(pasoActual, nuevoPaso)}-${Math.max(pasoActual, nuevoPaso)} .barra-interna`;
-  const barra = document.querySelector(conectorId);
-
-  smoothScrollToTop(() => {
-    if (barra) {
-      // Si vamos hacia atrás, reducir la barra
-      barra.style.width = direccion === 'avanzar' ? '100%' : '0%';
-
-      barra.addEventListener('transitionend', function onTransitionEnd(e) {
-        
-        if (e.propertyName === 'width') {
-          
-          barra.removeEventListener('transitionend', onTransitionEnd);
-          setPasoActual(nuevoPaso);
-        }
-      }, { once: true });
+  if (Math.abs(nuevoPaso - pasoActual) <= 1) {
+    // Comportamiento original para pasos adyacentes
+    const direccion = nuevoPaso > pasoActual ? 'avanzar' : 'retroceder';
+    const conectorId = `#conector-${Math.min(pasoActual, nuevoPaso)}-${Math.max(pasoActual, nuevoPaso)}`;
+    const barra = document.querySelector(conectorId);
+    smoothScrollToTop(() => {
+      if (barra) {
+        barra.style.width = direccion === 'avanzar' ? '100%' : '0%';
+        barra.addEventListener('transitionend', function onTransitionEnd(e) {
+          if (e.propertyName === 'width') {
+            barra.removeEventListener('transitionend', onTransitionEnd);
+            setPasoActual(nuevoPaso);
+          }
+        }, { once: true });
+      } else {
+        setPasoActual(nuevoPaso);
+      }
+    });
+  } else {
+    // Recursivo/iterativo para saltos de más de un paso
+    const pasos = [];
+    if (nuevoPaso > pasoActual) {
+      for (let i = pasoActual; i < nuevoPaso; i++) {
+        pasos.push([i, i + 1, 'avanzar']);
+      }
     } else {
-      // Si no hay barra, igual cambiar el paso
-      setPasoActual(nuevoPaso);
+      for (let i = pasoActual; i > nuevoPaso; i--) {
+        pasos.push([i, i - 1, 'retroceder']);
+      }
     }
-  });
+
+    const avanzarPaso = (index) => {
+      if (index >= pasos.length) {
+        console.log(`[cambiarPaso] Todos los pasos completados - setPasoActual(${nuevoPaso})`);
+        setPasoActual(nuevoPaso);
+        return;
+      }
+      const [from, to, direccion] = pasos[index];
+      const conectorId = `#conector-${Math.min(from, to)}-${Math.max(from, to)}`;
+      const barra = document.querySelector(conectorId);
+      smoothScrollToTop(() => {
+        if (barra) {
+          barra.style.width = direccion === 'avanzar' ? '100%' : '0%';
+          barra.addEventListener('transitionend', function onTransitionEnd(e) {
+            if (e.propertyName === 'width') {
+              barra.removeEventListener('transitionend', onTransitionEnd);
+              setPasoActual(to);
+              avanzarPaso(index + 1);
+            }
+          }, { once: true });
+        } else {
+          setPasoActual(to);
+          avanzarPaso(index + 1);
+        }
+      });
+    };
+
+    avanzarPaso(0);
+  }
 }
 
 export function pasoSiguiente() {
@@ -160,9 +196,17 @@ export function initializeWizardNavigation() {
     }
 
   } else if (window.location.hash === '#paso3') {
-    setPasoActual(3);
-  } else if (window.location.hash === '#paso3') {
-    setPasoActual(4);
+    setPasoActual(1);
+    activarWizardPaso(2);
+    activarWizardPaso(3);
+    cambiarPaso(3);
+    
+  } else if (window.location.hash === '#paso4') {
+    setPasoActual(1);
+    activarWizardPaso(2);
+    activarWizardPaso(3);
+    activarWizardPaso(4);
+    cambiarPaso(4);
   }
    else {
     setPasoActual(1);
