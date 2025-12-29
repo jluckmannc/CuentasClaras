@@ -5,7 +5,8 @@ import {
   setPasoActual,
   cambiarPaso,
   activarWizardPaso,
-  desactivarWizardPaso
+  desactivarWizardPaso,
+  setupRecalcNudge
 } 
 from './utils.js';
 import { 
@@ -513,6 +514,27 @@ export function closeResetModal() {
 
 export function openResetModal() {
   document.getElementById("resetModal").classList.remove("hidden");
+}
+
+
+let cleanupRepartoNudge = null;
+export function initPasoRepartoNudge({ demo = true } = {}) {
+  const stepEl = document.getElementById("step-reparto");
+  if (!stepEl) return;
+
+  const btnDesktop = document.getElementById("btn-recalcular");
+  const btnMobile = document.getElementById("btn-recalcular-mobile");
+
+  // Si reinicias el paso, evita duplicar listeners / pastilla
+  if (cleanupRepartoNudge) cleanupRepartoNudge();
+
+  cleanupRepartoNudge = setupRecalcNudge({
+    stepEl,
+    recalcButtons: [btnDesktop, btnMobile],
+    watchSelector: "input, select",
+    nudgeEveryMs: 6000,
+    demoDirtyEveryMs: demo ? 14000 : 0, // demo visual como me pediste
+  });
 }
 
 

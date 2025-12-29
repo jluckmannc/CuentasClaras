@@ -1,5 +1,5 @@
 // utils.js
-import { initializeGastosHandlers, crearGastoCard, showError } from './domHandlers.js';
+import { initializeGastosHandlers, crearGastoCard, showError, initPasoRepartoNudge } from './domHandlers.js';
 import { gastosList } from './stateManager.js';
 import { enviarDatosAGestionar, renderResultados } from './resultRenderer.js';
 import { participantsList } from './stateManager.js';
@@ -196,7 +196,7 @@ export function initializeWizardNavigation() {
     }
 
   } else if (window.location.hash === '#paso3') {
-    console.log("#paso-3");
+    initPasoRepartoNudge({ demo: true });
     
     setPasoActual(3);
     activarWizardPaso(3);
@@ -271,4 +271,204 @@ export function showToast(message) {
   setTimeout(() => {
     toast.classList.add('hidden');
   }, 2000);
+}
+
+
+// utils.js
+
+export function prefersReducedMotion() {
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
+export function isInViewport(el) {
+  if (!el) return false;
+  const r = el.getBoundingClientRect();
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  const vw = window.innerWidth || document.documentElement.clientWidth;
+  return r.bottom > 0 && r.right > 0 && r.top < vh && r.left < vw;
+}
+
+export function restartAnimationClass(el, className) {
+  if (!el) return;
+  el.classList.remove(className);
+  // reflow para reiniciar animación CSS
+  void el.offsetWidth;
+  el.classList.add(className);
+}
+
+export function ensureRecalcNudgeStyles() {
+  // Inyecta SOLO si no existe. Puedes mover esto a tu CSS global después.
+  if (document.getElementById("recalc-nudge-styles")) return;
+
+  const style = document.createElement("style");
+  style.id = "recalc-nudge-styles";
+  style.textContent = `
+    @media (prefers-reduced-motion: reduce) {
+      .recalc-attn, .recalc-ping, .recalc-pill { animation: none !important; transition: none !important; }
+    }
+
+    @keyframes recalcFlash {
+      0%   { box-shadow: 0 0 0 0 rgba(36,115,188,.00); transform: translateY(0); }
+      15%  { box-shadow: 0 0 0 6px rgba(36,115,188,.18); }
+      35%  { box-shadow: 0 0 0 10px rgba(36,115,188,.10); }
+      100% { box-shadow: 0 0 0 0 rgba(36,115,188,.00); transform: translateY(0); }
+    }
+
+    .recalc-attn {
+      color: rgb(0, 91, 159);
+      text-decoration: underline;
+      animation: recalcFlash 900ms ease-out 1;
+    }
+
+    .recalc-pill {
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      z-index: 50;
+      display: none;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 9999px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,.10);
+      font-size: 13px;
+      color: rgba(0,0,0,.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      user-select: none;
+    }
+
+    .recalc-pill strong { color: rgb(0, 91, 159); font-weight: 700; }
+
+    @keyframes pillPulse {
+      0%   { box-shadow: 0 10px 30px rgba(0,0,0,.10); }
+      50%  { box-shadow: 0 12px 34px rgba(36,115,188,.20); }
+      100% { box-shadow: 0 10px 30px rgba(0,0,0,.10); }
+    }
+
+    .recalc-pill.recalc-ping { animation: pillPulse 1.1s ease-in-out 1; }
+  `;
+  document.head.appendChild(style);
+}
+
+export function createRecalcPill({
+  text = "Cambios sin aplicar · <strong>Recalcular</strong>",
+  ariaLive = "polite",
+} = {}) {
+  const pill = document.createElement("button");
+  pill.type = "button";
+  pill.className = "recalc-pill";
+  pill.setAttribute("aria-live", ariaLive);
+  pill.innerHTML = text;
+  document.body.appendChild(pill);
+  return pill;
+}
+
+export function setupRecalcNudge({
+  stepEl,
+  recalcButtons = [],
+  watchSelector = "input, select",
+  nudgeEveryMs = 6000,
+  demoDirtyEveryMs = 0, // 0 = off
+} = {}) {
+  if (!stepEl) return () => {};
+
+  ensureRecalcNudgeStyles();
+
+  const watched = stepEl.querySelectorAll(watchSelector);
+  const buttons = recalcButtons.filter(Boolean);
+
+  const pill = createRecalcPill();
+
+  let dirty = false;
+  let nudgeTimer = null;
+  let demoTimer = null;
+
+  const flashBtn = (btn) => {
+    restartAnimationClass(btn, "recalc-attn");
+    // limpiar clase después (para que no quede subrayado permanente)
+    window.setTimeout(() => btn.classList.remove("recalc-attn"), 1000);
+  };
+
+  const pingPill = () => {
+    restartAnimationClass(pill, "recalc-ping");
+    window.setTimeout(() => pill.classList.remove("recalc-ping"), 1200);
+  };
+
+  const updateAffordance = () => {
+    if (!dirty) {
+      pill.style.display = "none";
+      return;
+    }
+
+    const visibleBtn = buttons.find(isInViewport);
+
+    if (visibleBtn) {
+      pill.style.display = "none";
+      flashBtn(visibleBtn);
+    } else {
+      pill.style.display = "inline-flex";
+      pingPill();
+    }
+  };
+
+  const setDirty = (val) => {
+    dirty = Boolean(val);
+    updateAffordance();
+
+    if (dirty && !nudgeTimer) {
+      nudgeTimer = window.setInterval(updateAffordance, nudgeEveryMs);
+    }
+    if (!dirty && nudgeTimer) {
+      window.clearInterval(nudgeTimer);
+      nudgeTimer = null;
+    }
+  };
+
+  // Evento: cambia cualquier campo => dirty true
+  const onChange = () => setDirty(true);
+  watched.forEach((el) => {
+    el.addEventListener("input", onChange, { passive: true });
+    el.addEventListener("change", onChange, { passive: true });
+  });
+
+  // Evento: click en recalcular => dirty false (por ahora demo)
+  const onRecalc = () => setDirty(false);
+  buttons.forEach((b) => b.addEventListener("click", onRecalc));
+
+  // Scroll/resize => re-evaluar
+  const onViewport = () => dirty && updateAffordance();
+  window.addEventListener("scroll", onViewport, { passive: true });
+  window.addEventListener("resize", onViewport, { passive: true });
+
+  // Pill click: lleva al primer botón recalcular disponible
+  pill.addEventListener("click", () => {
+    const target = buttons.find(Boolean);
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+    window.setTimeout(() => flashBtn(target), 350);
+  });
+
+  // Demo: cada X ms simula que “hubo cambios”
+  if (demoDirtyEveryMs > 0) {
+    demoTimer = window.setInterval(() => setDirty(true), demoDirtyEveryMs);
+  }
+
+  // cleanup (por si navegas entre pasos y quieres desmontar)
+  return function cleanup() {
+    watched.forEach((el) => {
+      el.removeEventListener("input", onChange);
+      el.removeEventListener("change", onChange);
+    });
+    buttons.forEach((b) => b.removeEventListener("click", onRecalc));
+    window.removeEventListener("scroll", onViewport);
+    window.removeEventListener("resize", onViewport);
+
+    if (nudgeTimer) window.clearInterval(nudgeTimer);
+    if (demoTimer) window.clearInterval(demoTimer);
+
+    pill.remove();
+  };
 }
