@@ -196,8 +196,9 @@ export function initializeWizardNavigation() {
     }
 
   } else if (window.location.hash === '#paso3') {
-    setPasoActual(1);
-    activarWizardPaso(2);
+    console.log("#paso-3");
+    
+    setPasoActual(3);
     activarWizardPaso(3);
     cambiarPaso(3);
     
