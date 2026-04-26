@@ -947,6 +947,29 @@ function getPagadorPlaceholderText() {
     : '\u00bfQui\u00e9n pag\u00f3?';
 }
 
+function syncNativeSelectState(selectElement) {
+  if (!selectElement) return;
+
+  const showingPlaceholder = selectElement.selectedIndex === 0 && !selectElement.value;
+  selectElement.classList.toggle('text-neutral-mid', showingPlaceholder);
+  selectElement.classList.toggle('text-primary-dark', !showingPlaceholder);
+
+  Array.from(selectElement.options).forEach((option, index) => {
+    const isPlaceholder = index === 0 && !option.value;
+    const isSelectedOption = option.selected && !isPlaceholder;
+
+    option.style.color = isPlaceholder || !isSelectedOption ? '#6c757d' : '#0a2540';
+    option.style.fontWeight = '400';
+  });
+}
+
+function bindNativeSelectState(selectElement) {
+  if (!selectElement || selectElement.dataset.stateBound === 'true') return;
+
+  selectElement.addEventListener('change', () => syncNativeSelectState(selectElement));
+  selectElement.dataset.stateBound = 'true';
+}
+
 function cargarPagadores() {
   const pagadorSelect = document.getElementById('gasto-pagador-select');
   if (!pagadorSelect) return;
@@ -958,6 +981,9 @@ function cargarPagadores() {
     option.textContent = participant.nombre;
     pagadorSelect.appendChild(option);
   });
+
+  bindNativeSelectState(pagadorSelect);
+  syncNativeSelectState(pagadorSelect);
 }
 
 function cargarBotonesParticipantes() {
@@ -1046,6 +1072,7 @@ function limpiarFormularioGasto() {
   document.getElementById('gasto-nombre-input').value = '';
   document.getElementById('gasto-monto-input').value = '';
   document.getElementById('gasto-pagador-select').selectedIndex = 0;
+  syncNativeSelectState(document.getElementById('gasto-pagador-select'));
 
   document.querySelectorAll('.participant-btn').forEach(btn => {
     btn.classList.remove('bg-secondary', 'text-white');
@@ -1123,6 +1150,7 @@ export function initializeGastosHandlers() {
       const pagadorSelect = document.getElementById('gasto-pagador-select');
       if (pagadorSelect && pagadorSelect.selectedIndex === 0) {
         pagadorSelect.options[0].textContent = getPagadorPlaceholderText();
+        syncNativeSelectState(pagadorSelect);
       }
     });
     window.__ccPagadorPlaceholderResizeAttached = true;
@@ -1149,6 +1177,9 @@ function llenarSelectPagadores(selectElementId) {
     option.textContent = participant.nombre;
     select.appendChild(option);
   });
+
+  bindNativeSelectState(select);
+  syncNativeSelectState(select);
 }
 
 export function openModal(index) {
@@ -1160,6 +1191,7 @@ export function openModal(index) {
   document.getElementById('gastoTipEdit').value = String(gasto.tip_percentage ?? 10);
   llenarSelectPagadores('gastoPagadorEdit');
   document.getElementById('gastoPagadorEdit').value = gasto.payer;
+  syncNativeSelectState(document.getElementById('gastoPagadorEdit'));
 
   const grid = document.getElementById('gastoParticipantesGridEdit');
   grid.innerHTML = '';
