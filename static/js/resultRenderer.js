@@ -1,5 +1,23 @@
 import { gastosList } from './stateManager.js';
 
+function calculateTipAmount(amount, percentage) {
+  return Math.round((Number(amount) || 0) * ((Number(percentage) || 0) / 100));
+}
+
+function serializeExpensesForBackend() {
+  return gastosList.map((gasto) => {
+    const tipEnabled = Boolean(gasto.tip_enabled);
+    const tipPercentage = tipEnabled ? Number(gasto.tip_percentage || 10) : 0;
+    const baseAmount = Number(gasto.expense_amount || 0);
+    const totalAmount = baseAmount + calculateTipAmount(baseAmount, tipPercentage);
+
+    return {
+      ...gasto,
+      expense_amount: totalAmount
+    };
+  });
+}
+
 // 🔹 Renderiza las transacciones agrupadas por acreedor
 export function renderResultados(resumen) {
   
@@ -72,7 +90,7 @@ export function copiarResultadosTexto() {
 
 
 export async function enviarDatosAGestionar() {
-  const payload = { expenses: gastosList };
+  const payload = { expenses: serializeExpensesForBackend() };
 
   try {
     const response = await fetch('/procesar-gastos/', {

@@ -21,18 +21,24 @@ if (window.location.hash === '#paso2') {
     {
       expense_name: "Desayuno en cafetería",
       expense_amount: 8420,
+      tip_enabled: false,
+      tip_percentage: 10,
       payer: "Camila",
       participants: ["Camila", "Esteban", "Rocío"]
     },
     {
       expense_name: "Arriendo de cabaña",
       expense_amount: 48450,
+      tip_enabled: false,
+      tip_percentage: 10,
       payer: "Lucas",
       participants: ["Martina", "Lucas", "Bastián", "Paula"]
     },
     {
       expense_name: "Tour guiado",
       expense_amount: 19800,
+      tip_enabled: false,
+      tip_percentage: 10,
       payer: "Tomás",
       participants: ["Tomás", "Ignacia", "Felipe", "Rocío", "Damián"]
     }

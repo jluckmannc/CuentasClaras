@@ -49,6 +49,36 @@ class ProcesarGastosViewTests(TestCase):
         # Mensaje concreto
         self.assertIn("inválido", resp["error"].lower())
 
+    def test_rechaza_monto_negativo(self):
+        data = {
+            "expenses": [
+                {
+                    "expense_name": "Cena",
+                    "expense_amount": -5000,
+                    "payer": "Ana",
+                    "participants": ["Ana", "Luis"]
+                }
+            ]
+        }
+        response = self.client.post(self.url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("monto entero mayor a 0", response.json()["error"].lower())
+
+    def test_rechaza_monto_decimal(self):
+        data = {
+            "expenses": [
+                {
+                    "expense_name": "Cena",
+                    "expense_amount": 5000.5,
+                    "payer": "Ana",
+                    "participants": ["Ana", "Luis"]
+                }
+            ]
+        }
+        response = self.client.post(self.url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("monto entero mayor a 0", response.json()["error"].lower())
+
 
 class CalcularBalancesUnitTests(unittest.TestCase):
     """Tests unitarios para la función calcular_balances (sin HTTP)."""

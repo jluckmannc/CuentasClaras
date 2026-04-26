@@ -47,7 +47,9 @@ export function renderizarSeccionActual() {
         gasto.expense_amount,
         gasto.payer,
         gasto.participants,
-        index
+        index,
+        gasto.tip_enabled ?? false,
+        gasto.tip_percentage ?? 10
       );
       gastosContainer.appendChild(card);
     });
@@ -186,7 +188,9 @@ export function initializeWizardNavigation() {
           gasto.expense_amount,
           gasto.payer,
           gasto.participants,
-          index
+          index,
+          gasto.tip_enabled ?? false,
+          gasto.tip_percentage ?? 10
         );
         gastosContainer.appendChild(card);
       });
