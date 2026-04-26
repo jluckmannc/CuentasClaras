@@ -391,11 +391,11 @@
       </div>
     </div>
 
-    <div id="calculatorModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[60] flex items-center justify-center px-4 transition-opacity duration-300 ease-in-out">
+    <div id="calculatorModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[60] flex items-center justify-center px-4 transition-opacity duration-300 ease-in-out" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="calculatorTitle">
       <div class="w-full max-w-sm rounded-2xl bg-white p-5 shadow-lg sm:p-6">
         <div class="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h3 class="text-lg font-bold text-primary-dark">Calculadora</h3>
+            <h3 id="calculatorTitle" class="text-lg font-bold text-primary-dark">Calculadora</h3>
           </div>
           <button
             type="button"

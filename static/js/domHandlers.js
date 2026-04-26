@@ -109,6 +109,10 @@ function getCurrentCalculatorToken(expression) {
   return expression.split(/[+\-*/]/).pop() || '';
 }
 
+function countCalculatorChar(expression, targetChar) {
+  return Array.from(expression || '').filter((char) => char === targetChar).length;
+}
+
 function sanitizeCalculatorExpression(rawValue) {
   return String(rawValue ?? '')
     .replace(/×/g, '*')
@@ -170,6 +174,11 @@ function getCalculatorElements() {
   };
 }
 
+function isCalculatorModalOpen() {
+  const { modal } = getCalculatorElements();
+  return Boolean(modal && !modal.classList.contains('hidden'));
+}
+
 function renderCalculatorDisplay() {
   const { display } = getCalculatorElements();
   if (!display) return;
@@ -221,6 +230,7 @@ function openCalculatorModal(targetInputId) {
   calculatorState.targetInputId = targetInputId;
   calculatorState.expression = sanitizeCalculatorExpression(targetInput.value || '');
   modal.classList.remove('hidden');
+  modal.focus();
   updateCalculatorPreview();
 }
 
@@ -243,6 +253,11 @@ function appendCalculatorValue(value) {
       calculatorState.expression = value === '00' ? '0' : value;
     } else {
       const lastChar = calculatorState.expression.slice(-1);
+      if (lastChar === ')') {
+        updateCalculatorPreview();
+        return;
+      }
+
       const currentToken = getCurrentCalculatorToken(calculatorState.expression);
 
       if (CALCULATOR_OPERATORS.has(lastChar)) {
@@ -257,13 +272,27 @@ function appendCalculatorValue(value) {
         calculatorState.expression += value;
       }
     }
+  } else if (value === '(') {
+    const lastChar = calculatorState.expression.slice(-1);
+    if (!calculatorState.expression || CALCULATOR_OPERATORS.has(lastChar) || lastChar === '(') {
+      calculatorState.expression += value;
+    }
+  } else if (value === ')') {
+    const lastChar = calculatorState.expression.slice(-1);
+    const openParens = countCalculatorChar(calculatorState.expression, '(');
+    const closeParens = countCalculatorChar(calculatorState.expression, ')');
+
+    if (openParens > closeParens && (/\d/.test(lastChar) || lastChar === ')')) {
+      calculatorState.expression += value;
+    }
   } else if (CALCULATOR_OPERATORS.has(value)) {
-    if (!calculatorState.expression || !/\d/.test(calculatorState.expression)) {
+    const lastChar = calculatorState.expression.slice(-1);
+
+    if (!calculatorState.expression || (!/\d/.test(calculatorState.expression) && lastChar !== ')')) {
       updateCalculatorPreview();
       return;
     }
 
-    const lastChar = calculatorState.expression.slice(-1);
     if (CALCULATOR_OPERATORS.has(lastChar)) {
       calculatorState.expression = `${calculatorState.expression.slice(0, -1)}${value}`;
     } else {
@@ -272,6 +301,59 @@ function appendCalculatorValue(value) {
   }
 
   updateCalculatorPreview();
+}
+
+function handleCalculatorKeyboardInput(event) {
+  if (!isCalculatorModalOpen()) return;
+  if (event.altKey || event.ctrlKey || event.metaKey) return;
+
+  const { applyButton } = getCalculatorElements();
+  const { key } = event;
+
+  if (/^\d$/.test(key)) {
+    event.preventDefault();
+    appendCalculatorValue(key);
+    return;
+  }
+
+  if (['+', '-', '/', '(', ')'].includes(key)) {
+    event.preventDefault();
+    appendCalculatorValue(key);
+    return;
+  }
+
+  if (key === '*' || key.toLowerCase() === 'x') {
+    event.preventDefault();
+    appendCalculatorValue('*');
+    return;
+  }
+
+  if (key === '=' || key === 'Enter') {
+    event.preventDefault();
+    if (key === 'Enter' && applyButton && !applyButton.disabled) {
+      applyCalculatorResult();
+      return;
+    }
+    handleCalculatorAction('equals');
+    return;
+  }
+
+  if (key === 'Backspace') {
+    event.preventDefault();
+    handleCalculatorAction('backspace');
+    return;
+  }
+
+  if (key === 'Delete') {
+    event.preventDefault();
+    handleCalculatorAction('clear');
+    return;
+  }
+
+  if (key === 'Escape') {
+    event.preventDefault();
+    closeCalculatorModal();
+  }
 }
 
 function handleCalculatorAction(action) {
@@ -321,6 +403,8 @@ function initializeCalculatorModal() {
         closeCalculatorModal();
       }
     });
+
+    document.addEventListener('keydown', handleCalculatorKeyboardInput);
 
     modal.dataset.listenerAttached = 'true';
   }
