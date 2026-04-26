@@ -116,19 +116,34 @@
                 align-items: stretch;
               }
 
+              .pagador-native-select-mobile {
+                padding-right: 2.35rem;
+              }
+
+              .gasto-monto-pagador-row #input-wrapper,
+              .gasto-monto-pagador-row .gasto-pagador-select-mobile {
+                height: 2.5rem;
+              }
+
               .gasto-monto-pagador-row #input-wrapper > span {
                 padding-left: 0.625rem;
                 padding-right: 0.625rem;
               }
 
               .gasto-monto-pagador-row #gasto-monto-input {
+                height: 100%;
+                padding-top: 0;
+                padding-bottom: 0;
                 padding-right: 0.5rem;
+              }
+
+              .gasto-monto-pagador-row .calculator-trigger {
+                height: 100%;
               }
 
               .gasto-monto-pagador-row .gasto-pagador-select-mobile {
                 min-width: 0;
-                padding-left: 0.625rem;
-                padding-right: 1.75rem;
+                padding-left: 0.875rem;
               }
             }
           </style>
@@ -137,18 +152,18 @@
           <div class="gasto-monto-pagador-row flex flex-col gap-2 sm:flex-row sm:items-center">
             <div class="w-full sm:w-[42%]">
               <div id="input-wrapper"
-              class="flex w-full border border-neutral-light rounded-lg focus-within:border-transparent focus-within:ring-2 focus-within:ring-primary-dark">
-                    <span class="flex items-center justify-center px-2.5 text-primary-dark text-sm">$</span>
+              class="flex h-10 w-full border border-neutral-light rounded-lg focus-within:border-transparent focus-within:ring-2 focus-within:ring-primary-dark">
+                    <span class="flex h-full items-center justify-center px-2.5 text-primary-dark text-sm">$</span>
                 <input 
                   type="text" 
                   id="gasto-monto-input" 
                   placeholder="Monto" 
-                  class="w-full min-w-0 pr-3 py-2 border-none rounded-r-lg font-input text-primary-dark bg-transparent text-sm focus:outline-none"
+                  class="h-full w-full min-w-0 pr-3 py-0 border-none rounded-r-lg font-input text-primary-dark bg-transparent text-sm focus:outline-none"
                   inputmode="numeric" pattern="[0-9]*" autocomplete="off">
                 <button
                   type="button"
                   data-calculator-target="gasto-monto-input"
-                  class="calculator-trigger flex h-10 w-9 shrink-0 items-center justify-center rounded-r-lg border-l border-neutral-light bg-white text-primary-dark transition-all duration-200 hover:bg-primary-light focus:outline-none"
+                  class="calculator-trigger flex h-full w-9 shrink-0 items-center justify-center rounded-r-lg border-l border-neutral-light bg-white text-primary-dark transition-all duration-200 hover:bg-primary-light focus:outline-none"
                   aria-label="Abrir calculadora para monto">
                   <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                     <rect x="4" y="3.5" width="12" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -164,10 +179,17 @@
               </div>
             </div>
 
-            <select 
-              id="gasto-pagador-select" 
-              class="gasto-pagador-select-mobile w-full px-4 py-2 border border-neutral-light rounded-lg font-input text-sm text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark sm:hidden">
-            </select>
+            <div class="relative sm:hidden">
+              <select 
+                id="gasto-pagador-select" 
+                class="pagador-native-select-mobile gasto-pagador-select-mobile h-10 w-full appearance-none rounded-lg border border-neutral-light bg-white px-4 py-2 font-input text-sm text-primary-dark transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-dark">
+              </select>
+              <span class="pagador-native-select-icon pointer-events-none absolute inset-y-0 right-3 flex items-center text-primary-dark/70 transition-colors duration-200" aria-hidden="true">
+                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                  <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </div>
             <div id="gasto-pagador-combobox" class="relative hidden sm:block sm:w-[58%]">
               <button
                 type="button"
@@ -420,8 +442,15 @@
           <!-- Pagador -->
           <div class="flex flex-col">
             <label class="text-sm font-semibold text-neutral-mid mb-1" for="gastoPagadorEdit">Pag&oacute;</label>
-            <select id="gastoPagadorEdit" class="w-full border border-neutral-light rounded-lg px-3 py-2 text-sm text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark sm:hidden">
-            </select>
+            <div class="relative sm:hidden">
+              <select id="gastoPagadorEdit" class="pagador-native-select-mobile h-10 w-full appearance-none rounded-lg border border-neutral-light bg-white px-3.5 py-2 pr-10 text-sm text-primary-dark transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-dark">
+              </select>
+              <span class="pagador-native-select-icon pointer-events-none absolute inset-y-0 right-3 flex items-center text-primary-dark/70 transition-colors duration-200" aria-hidden="true">
+                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                  <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </div>
             <div id="gastoPagadorComboboxEdit" class="relative hidden sm:block">
               <button
                 type="button"

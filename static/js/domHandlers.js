@@ -953,13 +953,15 @@ function syncNativeSelectState(selectElement) {
   const showingPlaceholder = selectElement.selectedIndex === 0 && !selectElement.value;
   selectElement.classList.toggle('text-neutral-mid', showingPlaceholder);
   selectElement.classList.toggle('text-primary-dark', !showingPlaceholder);
+  selectElement.classList.add('border-neutral-light');
+  selectElement.classList.toggle('font-medium', !showingPlaceholder);
 
   Array.from(selectElement.options).forEach((option, index) => {
     const isPlaceholder = index === 0 && !option.value;
     const isSelectedOption = option.selected && !isPlaceholder;
 
     option.style.color = isPlaceholder || !isSelectedOption ? '#6c757d' : '#0a2540';
-    option.style.fontWeight = '400';
+    option.style.fontWeight = isSelectedOption ? '500' : '400';
   });
 
   syncPagadorComboboxTrigger(selectElement);
