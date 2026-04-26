@@ -98,6 +98,281 @@ function initializeAmountInput(inputId, onChange = null) {
   }
 }
 
+const calculatorState = {
+  targetInputId: null,
+  expression: ''
+};
+
+const CALCULATOR_OPERATORS = new Set(['+', '-', '*', '/']);
+
+function getCurrentCalculatorToken(expression) {
+  return expression.split(/[+\-*/]/).pop() || '';
+}
+
+function sanitizeCalculatorExpression(rawValue) {
+  return String(rawValue ?? '')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/')
+    .replace(/−/g, '-')
+    .replace(/[^0-9+\-*/()\s]/g, '');
+}
+
+function normalizeCalculatorResult(result) {
+  if (!Number.isFinite(result)) return '';
+  return Math.round(result).toString();
+}
+
+function formatCalculatorExpression(expression) {
+  return String(expression || '0')
+    .replace(/\*/g, '×')
+    .replace(/\//g, '÷')
+    .replace(/-/g, '−');
+}
+
+function evaluateCalculatorExpression(expression) {
+  const sanitizedExpression = sanitizeCalculatorExpression(expression).trim();
+
+  if (!sanitizedExpression) {
+    return {
+      valid: false,
+      reason: 'empty'
+    };
+  }
+
+  if (/[*+/(.\-]$/.test(sanitizedExpression) && sanitizedExpression !== '-') {
+    return {
+      valid: false,
+      reason: 'incomplete'
+    };
+  }
+
+  try {
+    const result = Function(`"use strict"; return (${sanitizedExpression});`)();
+    if (!Number.isFinite(result)) {
+      return {
+        valid: false,
+        reason: 'invalid'
+      };
+    }
+
+    return {
+      valid: true,
+      result
+    };
+  } catch (error) {
+    return {
+      valid: false,
+      reason: 'invalid'
+    };
+  }
+}
+
+function getCalculatorPreviewResult(expression) {
+  const sanitizedExpression = sanitizeCalculatorExpression(expression).trim();
+
+  if (!sanitizedExpression) {
+    return '';
+  }
+
+  const directEvaluation = evaluateCalculatorExpression(sanitizedExpression);
+  if (directEvaluation.valid) {
+    return normalizeCalculatorResult(directEvaluation.result);
+  }
+
+  const trimmedExpression = sanitizedExpression.replace(/[+\-*/(\s]+$/, '').trim();
+  if (!trimmedExpression) {
+    return '';
+  }
+
+  const fallbackEvaluation = evaluateCalculatorExpression(trimmedExpression);
+  if (fallbackEvaluation.valid) {
+    return normalizeCalculatorResult(fallbackEvaluation.result);
+  }
+
+  return '';
+}
+
+function getCalculatorElements() {
+  return {
+    modal: document.getElementById('calculatorModal'),
+    expression: document.getElementById('calculatorExpression'),
+    display: document.getElementById('calculatorDisplay'),
+    applyButton: document.getElementById('applyCalculatorResult'),
+    closeButton: document.getElementById('closeCalculatorModal'),
+    cancelButton: document.getElementById('cancelCalculator')
+  };
+}
+
+function renderCalculatorDisplay() {
+  const { expression, display } = getCalculatorElements();
+  if (!display) return;
+
+  const rawExpression = calculatorState.expression || '0';
+  const previewResult = getCalculatorPreviewResult(calculatorState.expression);
+
+  if (expression) {
+    expression.textContent = formatCalculatorExpression(rawExpression);
+  }
+
+  if (!calculatorState.expression) {
+    display.textContent = '0';
+    return;
+  }
+
+  display.textContent = previewResult || '0';
+}
+
+function updateCalculatorPreview() {
+  const {
+    applyButton
+  } = getCalculatorElements();
+
+  if (!applyButton) return;
+
+  renderCalculatorDisplay();
+
+  const evaluation = evaluateCalculatorExpression(calculatorState.expression);
+
+  if (!evaluation.valid) {
+    applyButton.disabled = true;
+    return;
+  }
+
+  if (evaluation.result <= 0) {
+    applyButton.disabled = true;
+    return;
+  }
+
+  applyButton.disabled = false;
+}
+
+function closeCalculatorModal() {
+  const { modal } = getCalculatorElements();
+  if (!modal) return;
+
+  modal.classList.add('hidden');
+  calculatorState.targetInputId = null;
+  calculatorState.expression = '';
+}
+
+function openCalculatorModal(targetInputId) {
+  const {
+    modal
+  } = getCalculatorElements();
+  const targetInput = document.getElementById(targetInputId);
+
+  if (!modal || !targetInput) return;
+
+  calculatorState.targetInputId = targetInputId;
+  calculatorState.expression = sanitizeCalculatorExpression(targetInput.value || '');
+  modal.classList.remove('hidden');
+  updateCalculatorPreview();
+}
+
+function applyCalculatorResult() {
+  const targetInput = document.getElementById(calculatorState.targetInputId);
+  if (!targetInput) return;
+
+  const evaluation = evaluateCalculatorExpression(calculatorState.expression);
+  if (!evaluation.valid || evaluation.result <= 0) return;
+
+  targetInput.value = String(Math.round(evaluation.result));
+  targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+  closeCalculatorModal();
+  targetInput.focus();
+}
+
+function appendCalculatorValue(value) {
+  if (/^\d+$/.test(value)) {
+    if (!calculatorState.expression) {
+      calculatorState.expression = value === '00' ? '0' : value;
+    } else {
+      const lastChar = calculatorState.expression.slice(-1);
+      const currentToken = getCurrentCalculatorToken(calculatorState.expression);
+
+      if (CALCULATOR_OPERATORS.has(lastChar)) {
+        calculatorState.expression += value === '00' ? '0' : value;
+      } else if (currentToken === '0') {
+        if (value !== '0' && value !== '00') {
+          calculatorState.expression = `${calculatorState.expression.slice(0, -1)}${value}`;
+        }
+      } else if (currentToken === '') {
+        calculatorState.expression += value === '00' ? '0' : value;
+      } else {
+        calculatorState.expression += value;
+      }
+    }
+  } else if (CALCULATOR_OPERATORS.has(value)) {
+    if (!calculatorState.expression || !/\d/.test(calculatorState.expression)) {
+      updateCalculatorPreview();
+      return;
+    }
+
+    const lastChar = calculatorState.expression.slice(-1);
+    if (CALCULATOR_OPERATORS.has(lastChar)) {
+      calculatorState.expression = `${calculatorState.expression.slice(0, -1)}${value}`;
+    } else {
+      calculatorState.expression += value;
+    }
+  }
+
+  updateCalculatorPreview();
+}
+
+function handleCalculatorAction(action) {
+  if (action === 'clear') {
+    calculatorState.expression = '';
+  } else if (action === 'backspace') {
+    calculatorState.expression = calculatorState.expression.slice(0, -1);
+  } else if (action === 'equals') {
+    const evaluation = evaluateCalculatorExpression(calculatorState.expression);
+    if (evaluation.valid) {
+      calculatorState.expression = normalizeCalculatorResult(evaluation.result);
+    }
+  }
+
+  updateCalculatorPreview();
+}
+
+function initializeCalculatorModal() {
+  const {
+    modal,
+    closeButton,
+    cancelButton,
+    applyButton
+  } = getCalculatorElements();
+
+  if (!modal || !applyButton) return;
+
+  if (!modal.dataset.listenerAttached) {
+    document.querySelectorAll('.calculator-trigger').forEach((button) => {
+      button.addEventListener('click', () => openCalculatorModal(button.dataset.calculatorTarget));
+    });
+
+    modal.querySelectorAll('[data-calc-value]').forEach((button) => {
+      button.addEventListener('click', () => appendCalculatorValue(button.dataset.calcValue));
+    });
+
+    modal.querySelectorAll('[data-calc-action]').forEach((button) => {
+      button.addEventListener('click', () => handleCalculatorAction(button.dataset.calcAction));
+    });
+
+    closeButton?.addEventListener('click', closeCalculatorModal);
+    cancelButton?.addEventListener('click', closeCalculatorModal);
+    applyButton.addEventListener('click', applyCalculatorResult);
+
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        closeCalculatorModal();
+      }
+    });
+
+    modal.dataset.listenerAttached = 'true';
+  }
+
+  updateCalculatorPreview();
+}
+
 function getSelectedTipPercentage(selectId) {
   const select = document.getElementById(selectId);
   return Number(select?.value || 10);
@@ -726,6 +1001,7 @@ export function initializeGastosHandlers() {
 
   cargarPagadores();
   cargarBotonesParticipantes();
+  initializeCalculatorModal();
 
   if (!addGastoButton.dataset.listenerAttached) {
     addGastoButton.addEventListener('click', handleAddGasto);
@@ -801,6 +1077,7 @@ export function initializeEditModalHandlers() {
   const editForm = document.getElementById('editForm');
   if (!editForm) return;
 
+  initializeCalculatorModal();
   initializeAmountInput('gastoMontoEdit', () => updateTipSummary(editTipConfig));
   initializeTipPanel(editTipConfig);
 
