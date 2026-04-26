@@ -109,10 +109,6 @@ function getCurrentCalculatorToken(expression) {
   return expression.split(/[+\-*/]/).pop() || '';
 }
 
-function countCalculatorChar(expression, targetChar) {
-  return Array.from(expression || '').filter((char) => char === targetChar).length;
-}
-
 function sanitizeCalculatorExpression(rawValue) {
   return String(rawValue ?? '')
     .replace(/×/g, '*')
@@ -124,13 +120,6 @@ function sanitizeCalculatorExpression(rawValue) {
 function normalizeCalculatorResult(result) {
   if (!Number.isFinite(result)) return '';
   return Math.round(result).toString();
-}
-
-function formatCalculatorExpression(expression) {
-  return String(expression || '0')
-    .replace(/\*/g, '×')
-    .replace(/\//g, '÷')
-    .replace(/-/g, '−');
 }
 
 function evaluateCalculatorExpression(expression) {
@@ -171,35 +160,9 @@ function evaluateCalculatorExpression(expression) {
   }
 }
 
-function getCalculatorPreviewResult(expression) {
-  const sanitizedExpression = sanitizeCalculatorExpression(expression).trim();
-
-  if (!sanitizedExpression) {
-    return '';
-  }
-
-  const directEvaluation = evaluateCalculatorExpression(sanitizedExpression);
-  if (directEvaluation.valid) {
-    return normalizeCalculatorResult(directEvaluation.result);
-  }
-
-  const trimmedExpression = sanitizedExpression.replace(/[+\-*/(\s]+$/, '').trim();
-  if (!trimmedExpression) {
-    return '';
-  }
-
-  const fallbackEvaluation = evaluateCalculatorExpression(trimmedExpression);
-  if (fallbackEvaluation.valid) {
-    return normalizeCalculatorResult(fallbackEvaluation.result);
-  }
-
-  return '';
-}
-
 function getCalculatorElements() {
   return {
     modal: document.getElementById('calculatorModal'),
-    expression: document.getElementById('calculatorExpression'),
     display: document.getElementById('calculatorDisplay'),
     applyButton: document.getElementById('applyCalculatorResult'),
     closeButton: document.getElementById('closeCalculatorModal'),
@@ -208,22 +171,10 @@ function getCalculatorElements() {
 }
 
 function renderCalculatorDisplay() {
-  const { expression, display } = getCalculatorElements();
+  const { display } = getCalculatorElements();
   if (!display) return;
 
-  const rawExpression = calculatorState.expression || '0';
-  const previewResult = getCalculatorPreviewResult(calculatorState.expression);
-
-  if (expression) {
-    expression.textContent = formatCalculatorExpression(rawExpression);
-  }
-
-  if (!calculatorState.expression) {
-    display.textContent = '0';
-    return;
-  }
-
-  display.textContent = previewResult || '0';
+  display.textContent = calculatorState.expression || '0';
 }
 
 function updateCalculatorPreview() {
@@ -242,7 +193,7 @@ function updateCalculatorPreview() {
     return;
   }
 
-  if (evaluation.result <= 0) {
+   if (evaluation.result <= 0) {
     applyButton.disabled = true;
     return;
   }
@@ -292,11 +243,6 @@ function appendCalculatorValue(value) {
       calculatorState.expression = value === '00' ? '0' : value;
     } else {
       const lastChar = calculatorState.expression.slice(-1);
-      if (lastChar === ')') {
-        updateCalculatorPreview();
-        return;
-      }
-
       const currentToken = getCurrentCalculatorToken(calculatorState.expression);
 
       if (CALCULATOR_OPERATORS.has(lastChar)) {
@@ -311,27 +257,13 @@ function appendCalculatorValue(value) {
         calculatorState.expression += value;
       }
     }
-  } else if (value === '(') {
-    const lastChar = calculatorState.expression.slice(-1);
-    if (!calculatorState.expression || CALCULATOR_OPERATORS.has(lastChar) || lastChar === '(') {
-      calculatorState.expression += value;
-    }
-  } else if (value === ')') {
-    const lastChar = calculatorState.expression.slice(-1);
-    const openParens = countCalculatorChar(calculatorState.expression, '(');
-    const closeParens = countCalculatorChar(calculatorState.expression, ')');
-
-    if (openParens > closeParens && (/\d/.test(lastChar) || lastChar === ')')) {
-      calculatorState.expression += value;
-    }
   } else if (CALCULATOR_OPERATORS.has(value)) {
-    const lastChar = calculatorState.expression.slice(-1);
-
-    if (!calculatorState.expression || (!/\d/.test(calculatorState.expression) && lastChar !== ')')) {
+    if (!calculatorState.expression || !/\d/.test(calculatorState.expression)) {
       updateCalculatorPreview();
       return;
     }
 
+    const lastChar = calculatorState.expression.slice(-1);
     if (CALCULATOR_OPERATORS.has(lastChar)) {
       calculatorState.expression = `${calculatorState.expression.slice(0, -1)}${value}`;
     } else {
