@@ -118,12 +118,26 @@ function sanitizeCalculatorExpression(rawValue) {
     .replace(/×/g, '*')
     .replace(/÷/g, '/')
     .replace(/−/g, '-')
-    .replace(/[^0-9+\-*/()\s]/g, '');
+    .replace(/[^0-9.+\-*/()\s]/g, '');
 }
 
-function normalizeCalculatorResult(result) {
+function formatCalculatorExpression(expression) {
+  return String(expression || '0')
+    .replace(/\*/g, '×')
+    .replace(/\//g, '÷')
+    .replace(/-/g, '−');
+}
+
+function normalizeCalculatorExpressionValue(result) {
   if (!Number.isFinite(result)) return '';
-  return Math.round(result).toString();
+  return Number.parseFloat(result.toFixed(10)).toString();
+}
+
+function formatCalculatorResult(result) {
+  if (!Number.isFinite(result)) return '';
+  return new Intl.NumberFormat('es-CL', {
+    maximumFractionDigits: 4
+  }).format(result);
 }
 
 function evaluateCalculatorExpression(expression) {
@@ -167,6 +181,7 @@ function evaluateCalculatorExpression(expression) {
 function getCalculatorElements() {
   return {
     modal: document.getElementById('calculatorModal'),
+    expression: document.getElementById('calculatorExpression'),
     display: document.getElementById('calculatorDisplay'),
     applyButton: document.getElementById('applyCalculatorResult'),
     closeButton: document.getElementById('closeCalculatorModal'),
@@ -180,10 +195,51 @@ function isCalculatorModalOpen() {
 }
 
 function renderCalculatorDisplay() {
-  const { display } = getCalculatorElements();
+  const {
+    expression,
+    display
+  } = getCalculatorElements();
   if (!display) return;
 
-  display.textContent = calculatorState.expression || '0';
+  const rawExpression = calculatorState.expression || '0';
+  const sanitizedExpression = sanitizeCalculatorExpression(calculatorState.expression).trim();
+  let previewEvaluation = null;
+  let directEvaluation = null;
+  let usedFallbackEvaluation = false;
+
+  if (sanitizedExpression) {
+    directEvaluation = evaluateCalculatorExpression(sanitizedExpression);
+    if (directEvaluation.valid) {
+      previewEvaluation = directEvaluation;
+    } else {
+      const fallbackExpression = sanitizedExpression.replace(/[+\-*/(\s]+$/, '').trim();
+      const fallbackEvaluation = fallbackExpression && fallbackExpression !== sanitizedExpression
+        ? evaluateCalculatorExpression(fallbackExpression)
+        : null;
+      if (fallbackEvaluation?.valid) {
+        previewEvaluation = fallbackEvaluation;
+        usedFallbackEvaluation = true;
+      }
+    }
+  }
+
+  if (expression) {
+    expression.textContent = formatCalculatorExpression(rawExpression);
+  }
+
+  if (!calculatorState.expression) {
+    display.textContent = '0';
+    return;
+  }
+
+  if (!previewEvaluation) {
+    display.textContent = directEvaluation && !directEvaluation.valid && !usedFallbackEvaluation
+      ? 'Error'
+      : '0';
+    return;
+  }
+
+  display.textContent = formatCalculatorResult(previewEvaluation.result);
 }
 
 function updateCalculatorPreview() {
@@ -241,10 +297,23 @@ function applyCalculatorResult() {
   const evaluation = evaluateCalculatorExpression(calculatorState.expression);
   if (!evaluation.valid || evaluation.result <= 0) return;
 
-  targetInput.value = String(Math.round(evaluation.result));
+  const roundedResult = Math.round(evaluation.result);
+  const exactFormatted = formatCalculatorResult(evaluation.result);
+  const roundedChanged = Math.abs(evaluation.result - roundedResult) > 1e-9;
+  const roundedUp = roundedResult > evaluation.result;
+
+  targetInput.value = String(roundedResult);
   targetInput.dispatchEvent(new Event('input', { bubbles: true }));
   closeCalculatorModal();
   targetInput.focus();
+
+  if (roundedChanged) {
+    showToast(
+      roundedUp
+        ? `Se aproximó hacia arriba de ${exactFormatted} a ${roundedResult}.`
+        : `Se aproximó de ${exactFormatted} a ${roundedResult}.`
+    );
+  }
 }
 
 function appendCalculatorValue(value) {
@@ -364,7 +433,7 @@ function handleCalculatorAction(action) {
   } else if (action === 'equals') {
     const evaluation = evaluateCalculatorExpression(calculatorState.expression);
     if (evaluation.valid) {
-      calculatorState.expression = normalizeCalculatorResult(evaluation.result);
+      calculatorState.expression = normalizeCalculatorExpressionValue(evaluation.result);
     }
   }
 
