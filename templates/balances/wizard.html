@@ -166,8 +166,36 @@
 
             <select 
               id="gasto-pagador-select" 
-              class="gasto-pagador-select-mobile w-full px-4 py-2 border border-neutral-light rounded-lg font-input text-sm text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark sm:w-[58%]">
+              class="gasto-pagador-select-mobile w-full px-4 py-2 border border-neutral-light rounded-lg font-input text-sm text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark sm:hidden">
             </select>
+            <div id="gasto-pagador-combobox" class="relative hidden sm:block sm:w-[58%]">
+              <button
+                type="button"
+                id="gasto-pagador-trigger"
+                class="flex w-full items-center justify-between gap-3 rounded-lg border border-neutral-light bg-white px-4 py-2 text-left font-input text-sm text-primary-dark transition-all duration-200 hover:border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary-dark"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="gasto-pagador-dropdown">
+                <span id="gasto-pagador-trigger-text" class="truncate text-neutral-mid">&iquest;Qui&eacute;n pag&oacute;?</span>
+                <svg class="h-4 w-4 shrink-0 text-primary-dark/75" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div
+                id="gasto-pagador-dropdown"
+                class="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-30 hidden rounded-xl border border-neutral-light bg-white shadow-lg">
+                <div class="border-b border-neutral-light p-2">
+                  <input
+                    type="search"
+                    id="gasto-pagador-filter"
+                    aria-label="Filtrar pagador"
+                    class="w-full rounded-lg border border-neutral-light px-3 py-2 font-input text-xs text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark"
+                    autocomplete="off"
+                    spellcheck="false">
+                </div>
+                <div id="gasto-pagador-options" class="max-h-56 overflow-y-auto p-1" role="listbox"></div>
+              </div>
+            </div>
           </div>
 
           <div
@@ -392,8 +420,36 @@
           <!-- Pagador -->
           <div class="flex flex-col">
             <label class="text-sm font-semibold text-neutral-mid mb-1" for="gastoPagadorEdit">Pag&oacute;</label>
-            <select id="gastoPagadorEdit" class="w-full border border-neutral-light rounded-lg px-3 py-2 text-sm text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark">
+            <select id="gastoPagadorEdit" class="w-full border border-neutral-light rounded-lg px-3 py-2 text-sm text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark sm:hidden">
             </select>
+            <div id="gastoPagadorComboboxEdit" class="relative hidden sm:block">
+              <button
+                type="button"
+                id="gastoPagadorTriggerEdit"
+                class="flex w-full items-center justify-between gap-3 rounded-lg border border-neutral-light bg-white px-3 py-2 text-left text-sm text-primary-dark transition-all duration-200 hover:border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary-dark"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="gastoPagadorDropdownEdit">
+                <span id="gastoPagadorTriggerTextEdit" class="truncate text-neutral-mid">Selecciona</span>
+                <svg class="h-4 w-4 shrink-0 text-primary-dark/75" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div
+                id="gastoPagadorDropdownEdit"
+                class="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-30 hidden rounded-xl border border-neutral-light bg-white shadow-lg">
+                <div class="border-b border-neutral-light p-2">
+                  <input
+                    type="search"
+                    id="gastoPagadorFilterEdit"
+                    aria-label="Filtrar pagador"
+                    class="w-full rounded-lg border border-neutral-light px-3 py-2 text-xs text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-dark"
+                    autocomplete="off"
+                    spellcheck="false">
+                </div>
+                <div id="gastoPagadorOptionsEdit" class="max-h-56 overflow-y-auto p-1" role="listbox"></div>
+              </div>
+            </div>
           </div>
 
           <!-- Participantes -->

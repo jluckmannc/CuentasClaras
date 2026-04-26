@@ -961,29 +961,432 @@ function syncNativeSelectState(selectElement) {
     option.style.color = isPlaceholder || !isSelectedOption ? '#6c757d' : '#0a2540';
     option.style.fontWeight = '400';
   });
+
+  syncPagadorComboboxTrigger(selectElement);
+}
+
+function normalizeSelectSearchText(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function clearNativeSelectTypeahead(selectElement) {
+  if (!selectElement) return;
+
+  selectElement.dataset.typeaheadBuffer = '';
+
+  const timeoutId = Number(selectElement.dataset.typeaheadTimeoutId || 0);
+  if (timeoutId) {
+    window.clearTimeout(timeoutId);
+  }
+
+  delete selectElement.dataset.typeaheadTimeoutId;
+}
+
+function scheduleNativeSelectTypeaheadReset(selectElement) {
+  const existingTimeoutId = Number(selectElement.dataset.typeaheadTimeoutId || 0);
+  if (existingTimeoutId) {
+    window.clearTimeout(existingTimeoutId);
+  }
+
+  const timeoutId = window.setTimeout(() => {
+    clearNativeSelectTypeahead(selectElement);
+  }, 700);
+
+  selectElement.dataset.typeaheadTimeoutId = String(timeoutId);
+}
+
+function handleNativeSelectTypeahead(event) {
+  const selectElement = event.currentTarget;
+  if (!selectElement || event.altKey || event.ctrlKey || event.metaKey) return;
+
+  if (event.key === 'Escape') {
+    clearNativeSelectTypeahead(selectElement);
+    return;
+  }
+
+  if (event.key === 'Backspace') {
+    const currentBuffer = selectElement.dataset.typeaheadBuffer || '';
+    if (!currentBuffer) return;
+
+    event.preventDefault();
+    selectElement.dataset.typeaheadBuffer = currentBuffer.slice(0, -1);
+    scheduleNativeSelectTypeaheadReset(selectElement);
+    return;
+  }
+
+  if (!/^[\p{L}\p{N}\s]$/u.test(event.key)) return;
+
+  event.preventDefault();
+
+  const currentBuffer = selectElement.dataset.typeaheadBuffer || '';
+  const nextBuffer = `${currentBuffer}${event.key}`;
+  const normalizedBuffer = normalizeSelectSearchText(nextBuffer);
+  const options = Array.from(selectElement.options).filter((option) => option.value);
+
+  const matchingOption = options.find((option) =>
+    normalizeSelectSearchText(option.textContent).startsWith(normalizedBuffer)
+  );
+
+  if (matchingOption) {
+    selectElement.value = matchingOption.value;
+    syncNativeSelectState(selectElement);
+    selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  selectElement.dataset.typeaheadBuffer = nextBuffer;
+  scheduleNativeSelectTypeaheadReset(selectElement);
 }
 
 function bindNativeSelectState(selectElement) {
   if (!selectElement || selectElement.dataset.stateBound === 'true') return;
 
   selectElement.addEventListener('change', () => syncNativeSelectState(selectElement));
+  selectElement.addEventListener('keydown', handleNativeSelectTypeahead);
+  selectElement.addEventListener('blur', () => clearNativeSelectTypeahead(selectElement));
   selectElement.dataset.stateBound = 'true';
+}
+
+function getFilteredPagadores(filterValue = '') {
+  const normalizedFilter = normalizeSelectSearchText(filterValue);
+  if (!normalizedFilter) {
+    return [...participantsList];
+  }
+
+  return participantsList.filter((participant) =>
+    normalizeSelectSearchText(participant.nombre).includes(normalizedFilter)
+  );
+}
+
+function renderPagadorOptions(selectElement, {
+  placeholderText,
+  filterValue = '',
+  selectedValue = ''
+}) {
+  if (!selectElement) return [];
+
+  const filteredParticipants = getFilteredPagadores(filterValue);
+  selectElement.innerHTML = `<option value="" selected disabled hidden>${placeholderText}</option>`;
+
+  filteredParticipants.forEach((participant) => {
+    const option = document.createElement('option');
+    option.value = participant.nombre;
+    option.textContent = participant.nombre;
+    selectElement.appendChild(option);
+  });
+
+  if (!filteredParticipants.length) {
+    const emptyOption = document.createElement('option');
+    emptyOption.value = '';
+    emptyOption.disabled = true;
+    emptyOption.textContent = 'Sin coincidencias';
+    selectElement.appendChild(emptyOption);
+  }
+
+  if (selectedValue && filteredParticipants.some((participant) => participant.nombre === selectedValue)) {
+    selectElement.value = selectedValue;
+  } else {
+    selectElement.selectedIndex = 0;
+  }
+
+  bindNativeSelectState(selectElement);
+  syncNativeSelectState(selectElement);
+  return filteredParticipants;
+}
+
+function getPagadorComboboxConfig(selectId) {
+  if (selectId === 'gasto-pagador-select') {
+    return {
+      selectId: 'gasto-pagador-select',
+      containerId: 'gasto-pagador-combobox',
+      triggerId: 'gasto-pagador-trigger',
+      triggerTextId: 'gasto-pagador-trigger-text',
+      dropdownId: 'gasto-pagador-dropdown',
+      filterId: 'gasto-pagador-filter',
+      optionsId: 'gasto-pagador-options',
+      getPlaceholderText: getPagadorPlaceholderText
+    };
+  }
+
+  if (selectId === 'gastoPagadorEdit') {
+    return {
+      selectId: 'gastoPagadorEdit',
+      containerId: 'gastoPagadorComboboxEdit',
+      triggerId: 'gastoPagadorTriggerEdit',
+      triggerTextId: 'gastoPagadorTriggerTextEdit',
+      dropdownId: 'gastoPagadorDropdownEdit',
+      filterId: 'gastoPagadorFilterEdit',
+      optionsId: 'gastoPagadorOptionsEdit',
+      getPlaceholderText: () => 'Selecciona'
+    };
+  }
+
+  return null;
+}
+
+function getPagadorComboboxElements(config) {
+  if (!config) return {};
+
+  return {
+    select: document.getElementById(config.selectId),
+    container: document.getElementById(config.containerId),
+    trigger: document.getElementById(config.triggerId),
+    triggerText: document.getElementById(config.triggerTextId),
+    dropdown: document.getElementById(config.dropdownId),
+    filterInput: document.getElementById(config.filterId),
+    optionsContainer: document.getElementById(config.optionsId)
+  };
+}
+
+function syncPagadorComboboxTrigger(selectElement) {
+  const config = getPagadorComboboxConfig(selectElement?.id);
+  if (!config) return;
+
+  const {
+    triggerText
+  } = getPagadorComboboxElements(config);
+
+  if (!triggerText) return;
+
+  const selectedValue = selectElement.value;
+  triggerText.textContent = selectedValue || config.getPlaceholderText();
+  triggerText.classList.toggle('text-neutral-mid', !selectedValue);
+  triggerText.classList.toggle('text-primary-dark', Boolean(selectedValue));
+}
+
+function setPagadorComboboxActiveOption(config, nextIndex) {
+  const {
+    dropdown,
+    optionsContainer
+  } = getPagadorComboboxElements(config);
+  if (!dropdown || !optionsContainer) return;
+
+  const optionButtons = Array.from(optionsContainer.querySelectorAll('[data-pagador-option]'));
+  if (!optionButtons.length) {
+    dropdown.dataset.activeIndex = '-1';
+    return;
+  }
+
+  const boundedIndex = Math.max(0, Math.min(nextIndex, optionButtons.length - 1));
+  dropdown.dataset.activeIndex = String(boundedIndex);
+
+  optionButtons.forEach((button, index) => {
+    const isActive = index === boundedIndex;
+    button.classList.toggle('bg-secondary/20', isActive);
+    button.classList.toggle('border-secondary/40', isActive);
+    button.classList.toggle('text-primary-dark', true);
+    if (isActive) {
+      button.scrollIntoView({ block: 'nearest' });
+    }
+  });
+}
+
+function renderPagadorComboboxOptions(config, filterValue = '') {
+  const {
+    select,
+    dropdown,
+    optionsContainer
+  } = getPagadorComboboxElements(config);
+  if (!select || !dropdown || !optionsContainer) return [];
+
+  const filteredParticipants = getFilteredPagadores(filterValue);
+  const selectedValue = select.value;
+  let activeIndex = 0;
+  optionsContainer.innerHTML = '';
+
+  if (!filteredParticipants.length) {
+    const emptyState = document.createElement('p');
+    emptyState.className = 'px-3 py-2 text-xs text-neutral-mid';
+    emptyState.textContent = 'Sin coincidencias';
+    optionsContainer.appendChild(emptyState);
+    dropdown.dataset.activeIndex = '-1';
+    return filteredParticipants;
+  }
+
+  filteredParticipants.forEach((participant, index) => {
+    const optionButton = document.createElement('button');
+    optionButton.type = 'button';
+    optionButton.dataset.pagadorOption = 'true';
+    optionButton.dataset.value = participant.nombre;
+    optionButton.setAttribute('role', 'option');
+    optionButton.className = 'flex w-full items-center rounded-lg border border-transparent px-3 py-2 text-left text-sm text-primary-dark transition-colors duration-150 hover:bg-secondary/15 hover:border-secondary/30';
+    optionButton.textContent = participant.nombre;
+
+    if (participant.nombre === selectedValue) {
+      optionButton.classList.add('font-medium');
+      optionButton.setAttribute('aria-selected', 'true');
+    } else {
+      optionButton.setAttribute('aria-selected', 'false');
+    }
+
+    optionButton.addEventListener('click', () => {
+      select.value = participant.nombre;
+      syncNativeSelectState(select);
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      closePagadorCombobox(config);
+    });
+
+    optionsContainer.appendChild(optionButton);
+
+    if (participant.nombre === selectedValue) {
+      activeIndex = index;
+    }
+  });
+
+  dropdown.dataset.activeIndex = String(activeIndex);
+  setPagadorComboboxActiveOption(config, activeIndex);
+
+  return filteredParticipants;
+}
+
+function openPagadorCombobox(config) {
+  const {
+    container,
+    dropdown,
+    filterInput,
+    trigger
+  } = getPagadorComboboxElements(config);
+  if (!container || !dropdown || !filterInput || !trigger) return;
+
+  container.style.zIndex = '40';
+  dropdown.classList.remove('hidden');
+  trigger.setAttribute('aria-expanded', 'true');
+  renderPagadorComboboxOptions(config, filterInput.value);
+  window.requestAnimationFrame(() => filterInput.focus());
+}
+
+function closePagadorCombobox(config, { restoreFocus = false } = {}) {
+  const {
+    container,
+    dropdown,
+    filterInput,
+    trigger
+  } = getPagadorComboboxElements(config);
+  if (!container || !dropdown || !filterInput || !trigger) return;
+
+  dropdown.classList.add('hidden');
+  trigger.setAttribute('aria-expanded', 'false');
+  filterInput.value = '';
+  dropdown.dataset.activeIndex = '0';
+  container.style.zIndex = '';
+
+  if (restoreFocus) {
+    trigger.focus();
+  }
+}
+
+function bindPagadorCombobox(config) {
+  const {
+    select,
+    container,
+    trigger,
+    dropdown,
+    filterInput,
+    optionsContainer
+  } = getPagadorComboboxElements(config);
+
+  if (!select || !container || !trigger || !dropdown || !filterInput || !optionsContainer || container.dataset.bound === 'true') {
+    return;
+  }
+
+  trigger.addEventListener('click', () => {
+    if (dropdown.classList.contains('hidden')) {
+      openPagadorCombobox(config);
+    } else {
+      closePagadorCombobox(config, { restoreFocus: true });
+    }
+  });
+
+  trigger.addEventListener('keydown', (event) => {
+    const isPrintableKey = event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey;
+
+    if (['Enter', ' ', 'ArrowDown', 'ArrowUp'].includes(event.key)) {
+      event.preventDefault();
+      openPagadorCombobox(config);
+      return;
+    }
+
+    if (!isPrintableKey) return;
+
+    event.preventDefault();
+    openPagadorCombobox(config);
+    window.requestAnimationFrame(() => {
+      filterInput.value = event.key;
+      renderPagadorComboboxOptions(config, filterInput.value);
+      filterInput.focus();
+      filterInput.setSelectionRange(filterInput.value.length, filterInput.value.length);
+    });
+  });
+
+  filterInput.addEventListener('input', () => {
+    renderPagadorComboboxOptions(config, filterInput.value);
+  });
+
+  filterInput.addEventListener('keydown', (event) => {
+    const optionButtons = Array.from(optionsContainer.querySelectorAll('[data-pagador-option]'));
+    const activeIndex = Number(dropdown.dataset.activeIndex || 0);
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setPagadorComboboxActiveOption(config, activeIndex + 1);
+      return;
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setPagadorComboboxActiveOption(config, activeIndex - 1);
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      if (!optionButtons.length) return;
+      event.preventDefault();
+      optionButtons[Math.max(0, Math.min(activeIndex, optionButtons.length - 1))]?.click();
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closePagadorCombobox(config, { restoreFocus: true });
+      return;
+    }
+
+    if (event.key === 'Tab') {
+      closePagadorCombobox(config);
+    }
+  });
+
+  container.addEventListener('focusout', (event) => {
+    if (!container.contains(event.relatedTarget)) {
+      closePagadorCombobox(config);
+    }
+  });
+
+  document.addEventListener('mousedown', (event) => {
+    if (!container.contains(event.target)) {
+      closePagadorCombobox(config);
+    }
+  });
+
+  select.addEventListener('change', () => {
+    syncPagadorComboboxTrigger(select);
+    renderPagadorComboboxOptions(config);
+  });
+
+  container.dataset.bound = 'true';
 }
 
 function cargarPagadores() {
   const pagadorSelect = document.getElementById('gasto-pagador-select');
   if (!pagadorSelect) return;
-  pagadorSelect.innerHTML = `<option value="" selected disabled hidden>${getPagadorPlaceholderText()}</option>`;
-
-  participantsList.forEach(participant => {
-    const option = document.createElement('option');
-    option.value = participant.nombre;
-    option.textContent = participant.nombre;
-    pagadorSelect.appendChild(option);
+  renderPagadorOptions(pagadorSelect, {
+    placeholderText: getPagadorPlaceholderText()
   });
-
-  bindNativeSelectState(pagadorSelect);
-  syncNativeSelectState(pagadorSelect);
+  bindPagadorCombobox(getPagadorComboboxConfig('gasto-pagador-select'));
+  syncPagadorComboboxTrigger(pagadorSelect);
 }
 
 function cargarBotonesParticipantes() {
@@ -1071,8 +1474,11 @@ export function crearGastoCard(nombreGasto, monto, pagador, participantesSelecci
 function limpiarFormularioGasto() {
   document.getElementById('gasto-nombre-input').value = '';
   document.getElementById('gasto-monto-input').value = '';
-  document.getElementById('gasto-pagador-select').selectedIndex = 0;
-  syncNativeSelectState(document.getElementById('gasto-pagador-select'));
+  const pagadorSelect = document.getElementById('gasto-pagador-select');
+  renderPagadorOptions(pagadorSelect, {
+    placeholderText: getPagadorPlaceholderText()
+  });
+  closePagadorCombobox(getPagadorComboboxConfig('gasto-pagador-select'));
 
   document.querySelectorAll('.participant-btn').forEach(btn => {
     btn.classList.remove('bg-secondary', 'text-white');
@@ -1148,9 +1554,11 @@ export function initializeGastosHandlers() {
   if (!window.__ccPagadorPlaceholderResizeAttached) {
     window.addEventListener('resize', () => {
       const pagadorSelect = document.getElementById('gasto-pagador-select');
-      if (pagadorSelect && pagadorSelect.selectedIndex === 0) {
-        pagadorSelect.options[0].textContent = getPagadorPlaceholderText();
-        syncNativeSelectState(pagadorSelect);
+      if (pagadorSelect) {
+        renderPagadorOptions(pagadorSelect, {
+          placeholderText: getPagadorPlaceholderText(),
+          selectedValue: pagadorSelect.value
+        });
       }
     });
     window.__ccPagadorPlaceholderResizeAttached = true;
@@ -1168,18 +1576,9 @@ export function initializeGastosHandlers() {
 function llenarSelectPagadores(selectElementId) {
   const select = document.getElementById(selectElementId);
   if (!select) return;
-
-  select.innerHTML = '<option disabled selected>Selecciona</option>';
-
-  participantsList.forEach(participant => {
-    const option = document.createElement('option');
-    option.value = participant.nombre;
-    option.textContent = participant.nombre;
-    select.appendChild(option);
+  renderPagadorOptions(select, {
+    placeholderText: 'Selecciona'
   });
-
-  bindNativeSelectState(select);
-  syncNativeSelectState(select);
 }
 
 export function openModal(index) {
@@ -1192,6 +1591,9 @@ export function openModal(index) {
   llenarSelectPagadores('gastoPagadorEdit');
   document.getElementById('gastoPagadorEdit').value = gasto.payer;
   syncNativeSelectState(document.getElementById('gastoPagadorEdit'));
+  bindPagadorCombobox(getPagadorComboboxConfig('gastoPagadorEdit'));
+  syncPagadorComboboxTrigger(document.getElementById('gastoPagadorEdit'));
+  closePagadorCombobox(getPagadorComboboxConfig('gastoPagadorEdit'));
 
   const grid = document.getElementById('gastoParticipantesGridEdit');
   grid.innerHTML = '';
