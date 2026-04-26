@@ -108,8 +108,33 @@
 
           </div>
 
+          <style>
+            @media (max-width: 639px) {
+              .gasto-monto-pagador-row {
+                display: grid;
+                grid-template-columns: minmax(0, 0.48fr) minmax(0, 0.52fr);
+                align-items: stretch;
+              }
+
+              .gasto-monto-pagador-row #input-wrapper > span {
+                padding-left: 0.625rem;
+                padding-right: 0.625rem;
+              }
+
+              .gasto-monto-pagador-row #gasto-monto-input {
+                padding-right: 0.5rem;
+              }
+
+              .gasto-monto-pagador-row .gasto-pagador-select-mobile {
+                min-width: 0;
+                padding-left: 0.625rem;
+                padding-right: 1.75rem;
+              }
+            }
+          </style>
+
           <!-- Monto + Pagador -->
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div class="gasto-monto-pagador-row flex flex-col gap-2 sm:flex-row sm:items-center">
             <div class="w-full sm:w-[42%]">
               <div id="input-wrapper"
               class="flex w-full border border-neutral-light rounded-lg focus-within:border-transparent focus-within:ring-2 focus-within:ring-primary-dark">
@@ -141,7 +166,7 @@
 
             <select 
               id="gasto-pagador-select" 
-              class="w-full px-4 py-2 border border-neutral-light rounded-lg font-input text-primary-dark text-sm focus:outline-none focus:ring-2 focus:ring-primary-dark sm:w-[58%]">
+              class="gasto-pagador-select-mobile w-full px-4 py-2 border border-neutral-light rounded-lg font-input text-primary-dark text-sm focus:outline-none focus:ring-2 focus:ring-primary-dark sm:w-[58%]">
             </select>
           </div>
 

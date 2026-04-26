@@ -941,9 +941,16 @@ export function setupParticipantToggle(buttonGroupSelector, toggleButtonSelector
   }
 }
 
+function getPagadorPlaceholderText() {
+  return window.matchMedia('(max-width: 639px)').matches
+    ? 'Qui\u00e9n pag\u00f3'
+    : '\u00bfQui\u00e9n pag\u00f3?';
+}
+
 function cargarPagadores() {
   const pagadorSelect = document.getElementById('gasto-pagador-select');
-  pagadorSelect.innerHTML = '<option value="" selected disabled hidden>¿Quién pagó?</option>';
+  if (!pagadorSelect) return;
+  pagadorSelect.innerHTML = `<option value="" selected disabled hidden>${getPagadorPlaceholderText()}</option>`;
 
   participantsList.forEach(participant => {
     const option = document.createElement('option');
@@ -1110,6 +1117,16 @@ export function initializeGastosHandlers() {
   cargarPagadores();
   cargarBotonesParticipantes();
   initializeCalculatorModal();
+
+  if (!window.__ccPagadorPlaceholderResizeAttached) {
+    window.addEventListener('resize', () => {
+      const pagadorSelect = document.getElementById('gasto-pagador-select');
+      if (pagadorSelect && pagadorSelect.selectedIndex === 0) {
+        pagadorSelect.options[0].textContent = getPagadorPlaceholderText();
+      }
+    });
+    window.__ccPagadorPlaceholderResizeAttached = true;
+  }
 
   if (!addGastoButton.dataset.listenerAttached) {
     addGastoButton.addEventListener('click', handleAddGasto);
